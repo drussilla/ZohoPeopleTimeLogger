@@ -1,8 +1,10 @@
-﻿<Window x:Class="ZohoPeopleTimeLogger.MainWindow"
+﻿<Controls:MetroWindow  x:Class="ZohoPeopleTimeLogger.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:view="clr-namespace:ZohoPeopleTimeLogger.View"
+        Title="Zoho People Time Logger" Height="350" Width="525">
     <Grid>
-        
+        <Button Click="ButtonBase_OnClick"></Button>
     </Grid>
-</Window>
+</Controls:MetroWindow>
