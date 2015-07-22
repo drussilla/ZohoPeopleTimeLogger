@@ -5,21 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="200"
-             Margin="1"
-             Background="LightGray">
+             Margin="2"
+             Background="#f5fcff"
+             MouseEnter="DayViewOnMouseEnter"
+             MouseLeave="DayViewOnMouseLeave">
+    <!-- Background="#fff3f1" Empty -->
+    <!--Background="#f9f9f9" Disabled -->
+    <!--Background="#f5fcff" Filled -->
     <Grid>
+        <TextBlock Text="01"
+                   Margin="10 5"
+                   FontSize="15"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"/>
+        
         <TextBlock Text="08:00"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
-                   FontSize="50"/>
+                   FontSize="45"/>
 
         <Button Grid.Column="0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="5"
-                    Style="{DynamicResource MetroCircleButtonStyle}"
-                    Width="40"
-                    Height="40">
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="5"
+                Style="{DynamicResource MetroCircleButtonStyle}"
+                Width="40"
+                Height="40"
+                x:Name="DeleteButton"
+                Visibility="Hidden">
             <Rectangle Width="12"
                            Height="12"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">

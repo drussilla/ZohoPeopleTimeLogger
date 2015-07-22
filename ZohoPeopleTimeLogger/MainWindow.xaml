@@ -12,7 +12,7 @@
                 <Setter Property="FontSize" Value="15"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="0 0 0 5"/>
+                <Setter Property="Margin" Value="0 0 0 10"/>
             </Style.Setters>
         </Style>
     </Window.Resources>
@@ -41,7 +41,8 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0"
+              Margin="0 10 0 20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
@@ -130,11 +131,65 @@
                        Text="Friday"/>
             
             <view:DayView Grid.Row="1"
-                          Grid.Column="0"/>
+                          Grid.Column="0"
+                          Background="#f9f9f9"/>
             <view:DayView Grid.Row="1"
-                          Grid.Column="1"/>
+                          Grid.Column="1"
+                          Background="#f9f9f9"/>
+            <view:DayView Grid.Row="1"
+                          Grid.Column="2"/>
+            <view:DayView Grid.Row="1"
+                          Grid.Column="3"/>
+            <view:DayView Grid.Row="1"
+                          Grid.Column="4"/>
+            
             <view:DayView Grid.Row="2"
                           Grid.Column="0"/>
+            <view:DayView Grid.Row="2"
+                          Grid.Column="1"/>
+            <view:DayView Grid.Row="2"
+                          Grid.Column="2"
+                          Background="#fff3f1"/>
+            <view:DayView Grid.Row="2"
+                          Grid.Column="3"
+                          Background="#fff3f1"/>
+            <view:DayView Grid.Row="2"
+                          Grid.Column="4"
+                          Background="#fff3f1"/>
+
+            <view:DayView Grid.Row="3"
+                          Grid.Column="0"/>
+            <view:DayView Grid.Row="3"
+                          Grid.Column="1"/>
+            <view:DayView Grid.Row="3"
+                          Grid.Column="2"/>
+            <view:DayView Grid.Row="3"
+                          Grid.Column="3"/>
+            <view:DayView Grid.Row="3"
+                          Grid.Column="4"/>
+
+            <view:DayView Grid.Row="4"
+                          Grid.Column="0"/>
+            <view:DayView Grid.Row="4"
+                          Grid.Column="1"/>
+            <view:DayView Grid.Row="4"
+                          Grid.Column="2"/>
+            <view:DayView Grid.Row="4"
+                          Grid.Column="3"/>
+            <view:DayView Grid.Row="4"
+                          Grid.Column="4"/>
+
+            <view:DayView Grid.Row="5"
+                          Grid.Column="0"/>
+            <view:DayView Grid.Row="5"
+                          Grid.Column="1"/>
+            <view:DayView Grid.Row="5"
+                          Grid.Column="2"/>
+            <view:DayView Grid.Row="5"
+                          Grid.Column="3"/>
+            <view:DayView Grid.Row="5"
+                          Grid.Column="4"/>
+
         </Grid>
         
         <Button Grid.Row="2"
