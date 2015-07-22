@@ -3,8 +3,148 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:view="clr-namespace:ZohoPeopleTimeLogger.View"
+                       MinWidth="1000"
+                       MinHeight="850"
         Title="Zoho People Time Logger" Height="350" Width="525">
+    <Window.Resources>
+        <Style x:Key="DayOfWeekTitle" TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0 0 0 5"/>
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="ivan.derevyanko@novility.com" />
+            <Button>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                         Visual="{StaticResource appbar_user}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="Login" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
     <Grid>
-        <Button Click="ButtonBase_OnClick"></Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="5"
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    Width="40"
+                    Height="40">
+                <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_arrow_left}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <TextBlock Grid.Column="1"
+                       Margin="10 0 10 3"
+                       Text="September 2015"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="30"/>
+            <Button Grid.Column="2"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    Width="40"
+                    Height="40">
+                <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_arrow_right}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Style="{StaticResource DayOfWeekTitle}"
+                       Text="Monday"/>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="1"
+                       Style="{StaticResource DayOfWeekTitle}"
+                       Text="Tuesday"/>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="2"
+                       Style="{StaticResource DayOfWeekTitle}"
+                       Text="Wednesday"/>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="3"
+                       Style="{StaticResource DayOfWeekTitle}"
+                       Text="Thursday"/>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="4"
+                       Style="{StaticResource DayOfWeekTitle}"
+                       Text="Friday"/>
+            
+            <view:DayView Grid.Row="1"
+                          Grid.Column="0"/>
+            <view:DayView Grid.Row="1"
+                          Grid.Column="1"/>
+            <view:DayView Grid.Row="2"
+                          Grid.Column="0"/>
+        </Grid>
+        
+        <Button Grid.Row="2"
+                Content="Make me happy!"
+                Height="50"
+                Margin="3"
+                Controls:ButtonHelper.PreserveTextCase="True"
+                FontSize="30"
+                FontFamily="Entypo"
+                Style="{DynamicResource SquareButtonStyle}"
+                Click="ButtonBase_OnClick"></Button>
     </Grid>
 </Controls:MetroWindow>

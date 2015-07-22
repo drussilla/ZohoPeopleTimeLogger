@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="ZohoPeopleTimeLogger.View.DayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="200"
+             Margin="1"
+             Background="LightGray">
+    <Grid>
+        <TextBlock Text="08:00"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontSize="50"/>
+
+        <Button Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="5"
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    Width="40"
+                    Height="40">
+            <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_delete}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+    </Grid>
+</UserControl>
