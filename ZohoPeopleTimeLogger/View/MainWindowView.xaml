@@ -1,11 +1,18 @@
-﻿<Controls:MetroWindow  x:Class="ZohoPeopleTimeLogger.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:view="clr-namespace:ZohoPeopleTimeLogger.View"
+﻿<controls:MetroWindow  x:Class="ZohoPeopleTimeLogger.View.MainWindowView"
+                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                       xmlns:view="clr-namespace:ZohoPeopleTimeLogger.View"
+                       xmlns:viewModel="clr-namespace:ZohoPeopleTimeLogger.ViewModel"
                        MinWidth="1000"
                        MinHeight="850"
-        Title="Zoho People Time Logger" Height="350" Width="525">
+                       Width="1000"
+                       Height="850"
+                       WindowStartupLocation="CenterScreen"
+                       Title="Zoho People Time Logger">
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <Style x:Key="DayOfWeekTitle" TargetType="TextBlock">
             <Style.Setters>
@@ -16,10 +23,10 @@
             </Style.Setters>
         </Style>
     </Window.Resources>
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
-            <Button Content="ivan.derevyanko@novility.com" />
-            <Button>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Content="{Binding UserName}" />
+            <Button Command="{Binding LoginCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20"
                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -33,8 +40,8 @@
                    Text="Login" />
                 </StackPanel>
             </Button>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -196,10 +203,10 @@
                 Content="Make me happy!"
                 Height="50"
                 Margin="3"
-                Controls:ButtonHelper.PreserveTextCase="True"
+                controls:ButtonHelper.PreserveTextCase="True"
                 FontSize="30"
                 FontFamily="Entypo"
                 Style="{DynamicResource SquareButtonStyle}"
                 Click="ButtonBase_OnClick"></Button>
     </Grid>
-</Controls:MetroWindow>
+</controls:MetroWindow>
