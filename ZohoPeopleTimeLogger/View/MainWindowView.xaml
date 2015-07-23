@@ -207,6 +207,6 @@
                 FontSize="30"
                 FontFamily="Entypo"
                 Style="{DynamicResource SquareButtonStyle}"
-                Click="ButtonBase_OnClick"></Button>
+                Command="{Binding FillTimeCommand}"></Button>
     </Grid>
 </controls:MetroWindow>

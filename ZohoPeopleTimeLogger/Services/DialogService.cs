@@ -24,5 +24,15 @@ namespace ZohoPeopleTimeLogger.Services
                                 NegativeButtonVisibility = Visibility.Visible
                             });
         }
+
+        public Task<ProgressDialogController> ShowProgress(string title, string message)
+        {
+            return currentWindow.ShowProgressAsync(title, message);
+        }
+
+        public Task<MessageDialogResult> ShowMessageAsync(string title, string errorMessage)
+        {
+            return currentWindow.ShowMessageAsync(title , errorMessage);
+        }
     }
 }
