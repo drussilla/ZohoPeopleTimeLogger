@@ -14,6 +14,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         private readonly IZohoClient zohoClient;
 
+        private readonly IAuthenticationService authenticationService;
+
         public ICommand LoginCommand { get; private set; }
 
         public ICommand LogoutCommand { get; private set; }
@@ -24,11 +26,13 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public string UserName { get; set; }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IAuthenticationService authenticationService, IDialogService dialogService, IZohoClient zohoClient)
         {
+            this.dialogService = dialogService;
+            this.zohoClient = zohoClient;
+            this.authenticationService = authenticationService;
+
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
-            dialogService = new DialogService();
-            zohoClient = new ZohoClient();
         }
 
         private async void Login()

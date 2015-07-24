@@ -3,16 +3,13 @@
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                        xmlns:view="clr-namespace:ZohoPeopleTimeLogger.View"
-                       xmlns:viewModel="clr-namespace:ZohoPeopleTimeLogger.ViewModel"
                        MinWidth="1000"
                        MinHeight="850"
                        Width="1000"
                        Height="850"
                        WindowStartupLocation="CenterScreen"
-                       Title="Zoho People Time Logger">
-    <Window.DataContext>
-        <viewModel:MainWindowViewModel />
-    </Window.DataContext>
+                       Title="Zoho People Time Logger"
+                       DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
     <Window.Resources>
         <Style x:Key="DayOfWeekTitle" TargetType="TextBlock">
             <Style.Setters>

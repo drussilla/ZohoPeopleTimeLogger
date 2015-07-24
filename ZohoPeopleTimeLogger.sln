@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZohoPeopleTimeLogger", "ZohoPeopleTimeLogger\ZohoPeopleTimeLogger.csproj", "{76AA5397-52E4-4407-BFB9-CCF9433130F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZohoPeopleTimeLogger.UnitTests", "ZohoPeopleTimeLogger.UnitTests\ZohoPeopleTimeLogger.UnitTests.csproj", "{BB1EA0A4-D970-4BAB-A03E-368696053866}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{76AA5397-52E4-4407-BFB9-CCF9433130F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76AA5397-52E4-4407-BFB9-CCF9433130F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76AA5397-52E4-4407-BFB9-CCF9433130F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB1EA0A4-D970-4BAB-A03E-368696053866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB1EA0A4-D970-4BAB-A03E-368696053866}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB1EA0A4-D970-4BAB-A03E-368696053866}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB1EA0A4-D970-4BAB-A03E-368696053866}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
