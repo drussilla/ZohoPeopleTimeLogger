@@ -9,7 +9,7 @@ using ZohoPeopleTimeLogger.Services;
 
 namespace ZohoPeopleTimeLogger.ViewModel
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : ViewModel
     {
         private readonly IDialogService dialogService;
 
@@ -40,12 +40,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
             this.loginController = loginController;
             this.authenticationStorage = authenticationStorage;
 
+            LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
+        }
+
+        public override void ViewReady()
+        {
             if (authenticationStorage.GetAuthenticationData() == null)
             {
                 Login();
             }
-
-            LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
         }
 
         private async void Login()
