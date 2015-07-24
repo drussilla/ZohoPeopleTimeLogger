@@ -6,6 +6,7 @@
                        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                        xmlns:behaviours="clr-namespace:ZohoPeopleTimeLogger.Behaviours"
                        xmlns:viewModel="clr-namespace:ZohoPeopleTimeLogger.ViewModel"
+                       xmlns:behaviours1="http://metro.mahapps.com/winfx/xaml/shared"
                        MinWidth="1000"
                        MinHeight="850"
                        Width="1000"
@@ -13,6 +14,7 @@
                        WindowStartupLocation="CenterScreen"
                        Title="Zoho People Time Logger">
     <i:Interaction.Behaviors>
+        <behaviours1:BorderlessWindowBehavior />
         <behaviours:ViewModelBehaviour ViewModelType="{x:Type viewModel:MainWindowViewModel}"/>
     </i:Interaction.Behaviors>
     <Window.Resources>
