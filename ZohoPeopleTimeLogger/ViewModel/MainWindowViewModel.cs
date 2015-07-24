@@ -25,9 +25,9 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public ICommand FillTimeCommand { get; private set; }
 
-        public bool IsLoggedIn { get; set; }
+        public bool IsLoggedIn { get; private set; }
 
-        public string UserName { get; set; }
+        public string UserName { get; private set; }
 
         public MainWindowViewModel(
             IAuthenticationStorage authenticationStorage,
@@ -45,9 +45,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public override void ViewReady()
         {
-            if (authenticationStorage.GetAuthenticationData() == null)
+            var authData = authenticationStorage.GetAuthenticationData();
+            if (authData == null)
             {
                 Login();
+            }
+            else
+            {
+                IsLoggedIn = true;
+                UserName = authData.UserName;
             }
         }
 

@@ -32,5 +32,24 @@ namespace ZohoPeopleTimeLogger.UnitTests
             login.Verify(x => x.Login(), Times.Once);
             auth.Verify(x => x.SaveAuthenticationData(data));
         }
+
+        [Theory, AutoMoqData]
+        public void ViewReady_LoginInformationStored_UserIsLoggedIn(
+            [Frozen]Mock<IAuthenticationStorage> auth,
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho,
+            [Frozen]Mock<ILoginController> login,
+            [Frozen]AuthenticationData data,
+            MainWindowViewModel target)
+        {
+            auth.Setup(x => x.GetAuthenticationData()).Returns(data);
+            
+            target.ViewReady();
+
+            Assert.True(target.IsLoggedIn);
+            Assert.Equal(data.UserName, target.UserName);
+
+            login.Verify(x => x.Login(), Times.Never);
+        }
     }
 }

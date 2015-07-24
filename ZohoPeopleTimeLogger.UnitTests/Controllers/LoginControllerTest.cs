@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using Xunit;
 using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Controllers;
-using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;
-using ZohoPeopleTimeLogger.ViewModel;
 
 namespace ZohoPeopleTimeLogger.UnitTests.Controllers
 {
