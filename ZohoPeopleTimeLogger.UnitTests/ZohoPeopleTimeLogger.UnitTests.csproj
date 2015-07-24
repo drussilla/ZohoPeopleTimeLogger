@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMoqDataAttribute.cs" />
+    <Compile Include="Controllers\LoginControllerTest.cs" />
     <Compile Include="ViewModels\MainWindowViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

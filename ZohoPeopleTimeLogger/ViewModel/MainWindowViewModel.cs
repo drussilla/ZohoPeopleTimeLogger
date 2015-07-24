@@ -55,6 +55,13 @@ namespace ZohoPeopleTimeLogger.ViewModel
             if (authenticationData != null)
             {
                 authenticationStorage.SaveAuthenticationData(authenticationData);
+                IsLoggedIn = true;
+                UserName = authenticationData.UserName;
+            }
+            else
+            {
+                IsLoggedIn = false;
+                UserName = "";
             }
         }
     }
