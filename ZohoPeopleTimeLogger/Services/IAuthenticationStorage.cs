@@ -3,10 +3,10 @@ using ZohoPeopleTimeLogger.Model;
 
 namespace ZohoPeopleTimeLogger.Services
 {
-    public interface IAuthenticationService
+    public interface IAuthenticationStorage
     {
         AuthenticationData GetAuthenticationData();
 
-        void SaveAuthenticationData(string userName, string token);
+        void SaveAuthenticationData(AuthenticationData data);
     }
 }

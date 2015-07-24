@@ -90,15 +90,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviours\ViewModelBehaviour.cs" />
+    <Compile Include="Controllers\ILoginController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Model\AuthenticationData.cs" />
-    <Compile Include="Services\AuthenticationService.cs" />
+    <Compile Include="Services\AuthenticationStorage.cs" />
     <Compile Include="Services\DialogService.cs" />
-    <Compile Include="Services\IAuthenticationService.cs" />
+    <Compile Include="Services\IAuthenticationStorage.cs" />
     <Compile Include="Services\IDialogService.cs" />
     <Compile Include="ViewModel\DayViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\DayView.xaml.cs">
       <DependentUpon>DayView.xaml</DependentUpon>
     </Compile>

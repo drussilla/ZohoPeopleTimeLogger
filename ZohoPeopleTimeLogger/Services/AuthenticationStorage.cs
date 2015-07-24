@@ -5,12 +5,12 @@ using ZohoPeopleTimeLogger.Model;
 
 namespace ZohoPeopleTimeLogger.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationStorage : IAuthenticationStorage
     {
         private readonly string authenticationStorageFolder;
         private readonly string authenticationStorageFilePath;
 
-        public AuthenticationService()
+        public AuthenticationStorage()
         {
             authenticationStorageFolder = 
                 Path.Combine(
@@ -36,7 +36,7 @@ namespace ZohoPeopleTimeLogger.Services
             }
         }
 
-        public void SaveAuthenticationData(string userName, string token)
+        public void SaveAuthenticationData(AuthenticationData data)
         {
             if (!Directory.Exists(authenticationStorageFolder))
             {
@@ -46,7 +46,7 @@ namespace ZohoPeopleTimeLogger.Services
             using (var file = File.Open(authenticationStorageFilePath, FileMode.Create))
             {
                 var serializer = new XmlSerializer(typeof(AuthenticationData));
-                serializer.Serialize(file, new AuthenticationData {UserName = userName, Token = token});
+                serializer.Serialize(file, data);
             }
         }
     }

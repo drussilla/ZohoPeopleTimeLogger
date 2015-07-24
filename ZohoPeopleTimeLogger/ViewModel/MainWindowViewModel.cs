@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using ZohoPeopleClient;
 using ZohoPeopleClient.Exceptions;
+using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Services;
 
 namespace ZohoPeopleTimeLogger.ViewModel
@@ -14,7 +15,9 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         private readonly IZohoClient zohoClient;
 
-        private readonly IAuthenticationService authenticationService;
+        private readonly IAuthenticationStorage authenticationStorage;
+
+        private readonly ILoginController loginController;
 
         public ICommand LoginCommand { get; private set; }
 
@@ -26,39 +29,32 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public string UserName { get; set; }
 
-        public MainWindowViewModel(IAuthenticationService authenticationService, IDialogService dialogService, IZohoClient zohoClient)
+        public MainWindowViewModel(
+            IAuthenticationStorage authenticationStorage,
+            IDialogService dialogService,
+            IZohoClient zohoClient, 
+            ILoginController loginController)
         {
             this.dialogService = dialogService;
             this.zohoClient = zohoClient;
-            this.authenticationService = authenticationService;
+            this.loginController = loginController;
+            this.authenticationStorage = authenticationStorage;
+
+            if (authenticationStorage.GetAuthenticationData() == null)
+            {
+                Login();
+            }
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
         }
 
         private async void Login()
         {
-            var loginDetails = await dialogService.ShowLogin();
+            var authenticationData = await loginController.Login();
 
-            var progress = await dialogService.ShowProgress("Authentication", "Wait for response from server");
-            progress.SetIndeterminate();
-
-            var isError = false;
-            var errorMessage = "";
-            try
+            if (authenticationData != null)
             {
-                await zohoClient.LoginAsync(loginDetails.Username, loginDetails.Password);
-            }
-            catch (ApiLoginErrorException exception)
-            {
-                isError = true;
-                errorMessage = exception.Response;
-            }
-
-            await progress.CloseAsync();
-
-            if (isError)
-            {
-                await dialogService.ShowMessageAsync("Authentication error", errorMessage);
+                authenticationStorage.SaveAuthenticationData(authenticationData);
             }
         }
     }
