@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
+using PropertyChanged;
 using ZohoPeopleTimeLogger.Events;
 using ZohoPeopleTimeLogger.Services;
 
@@ -9,26 +9,33 @@ namespace ZohoPeopleTimeLogger.ViewModel
 {
     public class MonthPickerViewModel : ViewModel
     {
+        [AlsoNotifyFor("MonthString", "Month", "Year")]
+        private DateTime CurrentDate { get; set; }
+
         public ICommand NextMonthCommand { get; private set; }
 
         public ICommand PreviousMonthCommand { get; private set; }
 
         public string MonthString
         {
-            get { return new DateTime(Year, Month, 1).ToString("MMMM"); }
+            get { return CurrentDate.ToString("MMMM"); }
         }
 
-        public int Month { get; private set; }
-        
-        public int Year { get; private set; }
+        public int Month
+        {
+            get { return CurrentDate.Month; }
+        }
+
+        public int Year
+        {
+            get { return CurrentDate.Year; }
+        }
 
         public EventHandler<MonthChangedEventArgs> MonthChanged = delegate { };
 
         public MonthPickerViewModel(IDateTimeService dateTimeService)
         {
-            var currentDate = dateTimeService.Now;
-            Month = currentDate.Month;
-            Year = currentDate.Year;
+            CurrentDate = dateTimeService.Now;
             
             NextMonthCommand = new RelayCommand(GoToNextMonth);
             PreviousMonthCommand = new RelayCommand(GoToPrevMonth);
@@ -41,16 +48,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 return;
             }
 
-            if (Month == 1)
-            {
-                Month = 12;
-                Year--;
-            }
-            else
-            {
-                Month--;
-            }
-
+            CurrentDate = CurrentDate.AddMonths(-1);
             MonthChanged(this, new MonthChangedEventArgs(Year, Month));
         }
 
@@ -61,16 +59,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 return;
             }
 
-            if (Month == 12)
-            {
-                Year++;
-                Month = 1;
-            }
-            else
-            {
-                Month++;
-            }
-
+            CurrentDate = CurrentDate.AddMonths(1);
             MonthChanged(this, new MonthChangedEventArgs(Year, Month));
         }
     }
