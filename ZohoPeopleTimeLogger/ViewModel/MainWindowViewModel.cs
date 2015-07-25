@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
-using Microsoft.Practices.ServiceLocation;
-using Microsoft.Practices.Unity;
 using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Services;
