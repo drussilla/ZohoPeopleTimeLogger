@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Practices.ServiceLocation;
+using Microsoft.Practices.Unity;
 using ZohoPeopleClient;
-using ZohoPeopleClient.Exceptions;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Services;
 
@@ -32,6 +29,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public string UserName { get; private set; }
 
+        public MonthPickerViewModel MonthPickerViewModel { get; private set; }
+
         public ObservableCollection<DayViewModel> Days { get; set; } 
 
         public MainWindowViewModel(
@@ -44,6 +43,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
             this.zohoClient = zohoClient;
             this.loginController = loginController;
             this.authenticationStorage = authenticationStorage;
+
+            MonthPickerViewModel = ServiceLocator.Current.GetInstance<MonthPickerViewModel>();
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
         }

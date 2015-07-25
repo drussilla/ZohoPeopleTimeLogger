@@ -20,9 +20,9 @@ namespace ZohoPeopleTimeLogger.UnitTests
 
             var target = new MonthPickerViewModel(dateTime.Object);
 
-            Assert.Equal(currentDate.Month, target.Month);
-            Assert.Equal(currentDate.ToString("MMMM"), target.MonthString);
-            Assert.Equal(currentDate.Year, target.Year);
+            Assert.Equal(currentDate.Month, target.CurrentDate.Month);
+            Assert.Equal(currentDate.ToString("MMMM"), target.CurrentDate.ToString("MMMM"));
+            Assert.Equal(currentDate.Year, target.CurrentDate.Year);
         }
 
         public static IEnumerable NextMonthCommand_MonthChangedAndEventRised_Data()
@@ -59,8 +59,8 @@ namespace ZohoPeopleTimeLogger.UnitTests
                 target.NextMonthCommand.Execute(null);
             }
 
-            Assert.Equal(expected.Month, target.Month);
-            Assert.Equal(expected.Year, target.Year);
+            Assert.Equal(expected.Month, target.CurrentDate.Month);
+            Assert.Equal(expected.Year, target.CurrentDate.Year);
             Assert.Equal(runCommandTime, actualEventsAmount);
             Assert.Equal(expected.Month, lastMonthFromEvent);
             Assert.Equal(expected.Year, lastYearFromEvent);
@@ -80,8 +80,8 @@ namespace ZohoPeopleTimeLogger.UnitTests
 
             target.NextMonthCommand.Execute(null);
 
-            Assert.Equal(DateTime.MaxValue.Month, target.Month);
-            Assert.Equal(DateTime.MaxValue.Year, target.Year);
+            Assert.Equal(DateTime.MaxValue.Month, target.CurrentDate.Month);
+            Assert.Equal(DateTime.MaxValue.Year, target.CurrentDate.Year);
             Assert.Equal(0, actualEventsAmount);
         }
 
@@ -119,8 +119,8 @@ namespace ZohoPeopleTimeLogger.UnitTests
                 target.PreviousMonthCommand.Execute(null);
             }
 
-            Assert.Equal(expected.Month, target.Month);
-            Assert.Equal(expected.Year, target.Year);
+            Assert.Equal(expected.Month, target.CurrentDate.Month);
+            Assert.Equal(expected.Year, target.CurrentDate.Year);
             Assert.Equal(runCommandTimes, actualEventsAmount);
             Assert.Equal(expected.Month, lastMonthFromEvent);
             Assert.Equal(expected.Year, lastYearFromEvent);
@@ -140,8 +140,8 @@ namespace ZohoPeopleTimeLogger.UnitTests
             };
             target.PreviousMonthCommand.Execute(null);
 
-            Assert.Equal(DateTime.MinValue.Month, target.Month);
-            Assert.Equal(DateTime.MinValue.Year, target.Year);
+            Assert.Equal(DateTime.MinValue.Month, target.CurrentDate.Month);
+            Assert.Equal(DateTime.MinValue.Year, target.CurrentDate.Year);
             Assert.Equal(0, actualEventsAmount);
         }
     }
