@@ -37,14 +37,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
             IAuthenticationStorage authenticationStorage,
             IDialogService dialogService,
             IZohoClient zohoClient, 
-            ILoginController loginController)
+            ILoginController loginController,
+            IDateTimeService dateTimeService)
         {
             this.dialogService = dialogService;
             this.zohoClient = zohoClient;
             this.loginController = loginController;
             this.authenticationStorage = authenticationStorage;
 
-            MonthPickerViewModel = ServiceLocator.Current.GetInstance<MonthPickerViewModel>();
+            MonthPickerViewModel = new MonthPickerViewModel(dateTimeService);
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
         }

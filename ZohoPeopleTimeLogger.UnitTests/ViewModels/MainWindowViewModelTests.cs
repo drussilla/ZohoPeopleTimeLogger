@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Practices.ServiceLocation;
 using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
