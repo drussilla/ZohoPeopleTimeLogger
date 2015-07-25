@@ -49,5 +49,13 @@ namespace ZohoPeopleTimeLogger.Services
                 serializer.Serialize(file, data);
             }
         }
+
+        public void Clear()
+        {
+            if (File.Exists(authenticationStorageFilePath))
+            {
+                File.Delete(authenticationStorageFilePath);
+            }
+        }
     }
 }

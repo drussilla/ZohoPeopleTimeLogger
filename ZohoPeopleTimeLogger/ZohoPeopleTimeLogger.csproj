@@ -91,6 +91,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behaviours\ViewModelBehaviour.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Controllers\ILoginController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Events\MonthChangedEventArgs.cs" />

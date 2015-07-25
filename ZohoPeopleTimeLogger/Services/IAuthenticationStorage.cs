@@ -8,5 +8,6 @@ namespace ZohoPeopleTimeLogger.Services
         AuthenticationData GetAuthenticationData();
 
         void SaveAuthenticationData(AuthenticationData data);
+        void Clear();
     }
 }

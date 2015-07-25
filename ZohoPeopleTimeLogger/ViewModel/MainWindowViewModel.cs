@@ -46,6 +46,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             MonthPickerViewModel = new MonthPickerViewModel(dateTimeService);
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
+            LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
         }
 
         public override void ViewReady()
@@ -83,8 +84,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
             else
             {
                 IsLoggedIn = false;
-                UserName = "";
+                UserName = null;
             }
+        }
+
+        private void Logout()
+        {
+            authenticationStorage.Clear();
+            IsLoggedIn = false;
+            UserName = null;
         }
     }
 }
