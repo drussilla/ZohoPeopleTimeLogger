@@ -98,10 +98,12 @@
     <Compile Include="Model\AuthenticationData.cs" />
     <Compile Include="Services\AuthenticationStorage.cs" />
     <Compile Include="Services\DateTimeService.cs" />
+    <Compile Include="Services\DaysService.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\IAuthenticationStorage.cs" />
     <Compile Include="Services\IDateTimeService.cs" />
     <Compile Include="Services\IDialogService.cs" />
+    <Compile Include="Services\IDaysService.cs" />
     <Compile Include="ViewModel\DayViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />

@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Practices.Unity;
 using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Services;
@@ -11,7 +13,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
     {
         private readonly IDialogService dialogService;
 
-        private readonly IZohoClient zohoClient;
+        private readonly IDaysService daysService;
 
         private readonly IAuthenticationStorage authenticationStorage;
 
@@ -29,21 +31,21 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public MonthPickerViewModel MonthPickerViewModel { get; private set; }
 
-        public ObservableCollection<DayViewModel> Days { get; set; } 
+        public List<DayViewModel> Days { get; set; } 
 
         public MainWindowViewModel(
             IAuthenticationStorage authenticationStorage,
             IDialogService dialogService,
-            IZohoClient zohoClient, 
+            IDaysService daysService, 
             ILoginController loginController,
-            IDateTimeService dateTimeService)
+            MonthPickerViewModel monthPickerViewModel)
         {
             this.dialogService = dialogService;
-            this.zohoClient = zohoClient;
+            this.daysService = daysService;
             this.loginController = loginController;
             this.authenticationStorage = authenticationStorage;
 
-            MonthPickerViewModel = new MonthPickerViewModel(dateTimeService);
+            MonthPickerViewModel = monthPickerViewModel;
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
             LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
@@ -67,8 +69,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         private void LoadDays()
         {
-            Days = new ObservableCollection<DayViewModel>();
-            Days.Add(new DayViewModel());
+            Days = daysService.GetDaysAsync(MonthPickerViewModel.CurrentDate);
         }
 
         private async void Login()

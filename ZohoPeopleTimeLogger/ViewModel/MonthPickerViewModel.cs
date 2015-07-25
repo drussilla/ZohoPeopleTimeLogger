@@ -32,7 +32,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             }
 
             CurrentDate = CurrentDate.AddMonths(-1);
-            MonthChanged(this, new MonthChangedEventArgs(CurrentDate.Year, CurrentDate.Month));
+            MonthChanged(this, new MonthChangedEventArgs(CurrentDate));
         }
 
         private void GoToNextMonth()
@@ -43,7 +43,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             }
 
             CurrentDate = CurrentDate.AddMonths(1);
-            MonthChanged(this, new MonthChangedEventArgs(CurrentDate.Year, CurrentDate.Month));
+            MonthChanged(this, new MonthChangedEventArgs(CurrentDate));
         }
     }
 }

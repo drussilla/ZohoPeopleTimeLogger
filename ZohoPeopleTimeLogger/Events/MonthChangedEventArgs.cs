@@ -4,14 +4,11 @@ namespace ZohoPeopleTimeLogger.Events
 {
     public class MonthChangedEventArgs : EventArgs
     {
-        public int Month { get; private set; }
+        public DateTime NewMonth { get; private set; }
 
-        public int Year { get; private set; }
-
-        public MonthChangedEventArgs(int year, int month)
+        public MonthChangedEventArgs(DateTime newMonth)
         {
-            Month = month;
-            Year = year;
+            NewMonth = newMonth;
         }
     }
 }

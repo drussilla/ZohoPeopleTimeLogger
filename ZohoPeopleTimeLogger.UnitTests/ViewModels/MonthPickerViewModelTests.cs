@@ -50,8 +50,8 @@ namespace ZohoPeopleTimeLogger.UnitTests
             target.MonthChanged += (sender, args) =>
             {
                 actualEventsAmount++;
-                lastMonthFromEvent = args.Month;
-                lastYearFromEvent = args.Year;
+                lastMonthFromEvent = args.NewMonth.Month;
+                lastYearFromEvent = args.NewMonth.Year;
             };
 
             for (int i = 0; i < runCommandTime; i++)
@@ -110,8 +110,8 @@ namespace ZohoPeopleTimeLogger.UnitTests
             target.MonthChanged += (sender, args) =>
             {
                 actualEventsAmount++;
-                lastMonthFromEvent = args.Month;
-                lastYearFromEvent = args.Year;
+                lastMonthFromEvent = args.NewMonth.Month;
+                lastYearFromEvent = args.NewMonth.Year;
             };
 
             for (int i = 0; i < runCommandTimes; i++)
