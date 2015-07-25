@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -29,6 +32,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public string UserName { get; private set; }
 
+        public ObservableCollection<DayViewModel> Days { get; set; } 
+
         public MainWindowViewModel(
             IAuthenticationStorage authenticationStorage,
             IDialogService dialogService,
@@ -54,7 +59,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
             {
                 IsLoggedIn = true;
                 UserName = authData.UserName;
+
+                LoadDays();
             }
+        }
+
+        private void LoadDays()
+        {
+            Days = new ObservableCollection<DayViewModel>();
+            Days.Add(new DayViewModel());
         }
 
         private async void Login()

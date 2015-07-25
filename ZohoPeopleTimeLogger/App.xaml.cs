@@ -23,6 +23,8 @@ namespace ZohoPeopleTimeLogger
             container.RegisterType<IDialogService, DialogService>();
             container.RegisterType<ILoginController, LoginController>();
 
+            container.RegisterType<IDateTimeService, DateTimeService>();
+
             ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
         }
     }

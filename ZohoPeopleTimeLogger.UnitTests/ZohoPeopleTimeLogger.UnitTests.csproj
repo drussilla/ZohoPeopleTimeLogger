@@ -89,6 +89,7 @@
     <Compile Include="Controllers\LoginControllerTest.cs" />
     <Compile Include="ViewModels\MainWindowViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\MonthPickerViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
