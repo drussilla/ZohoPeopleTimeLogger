@@ -71,6 +71,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             {
                 IsLoggedIn = true;
                 UserName = authData.UserName;
+                zohoClient.Login(authData.Token);
 
                 LoadDays(MonthPickerViewModel.CurrentDate, authData);
             }
@@ -80,12 +81,17 @@ namespace ZohoPeopleTimeLogger.ViewModel
         {
             Days = daysService.GetDays(month);
 
+            var progress = await dialogService.ShowProgress("Loading data from server", "Please wait");
+            progress.SetIndeterminate();
+
             var timeLogs = await zohoClient.TimeTracker.TimeLog.GetAsync(
                     auth.UserName,
                     month.BeginOfMonth(), 
                     month.EndOfMonth());
+            
+            daysService.FillDaysWithTimeLogs(Days, timeLogs);
 
-            daysService.FillDays(Days, timeLogs);
+            await progress.CloseAsync();
         }
 
         private async void Login()

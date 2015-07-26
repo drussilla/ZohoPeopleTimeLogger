@@ -8,6 +8,6 @@ namespace ZohoPeopleTimeLogger.Services
     public interface IDaysService
     {
         List<DayViewModel> GetDays(DateTime month);
-        void FillDays(List<DayViewModel> days, List<TimeLog> timeLogs);
+        void FillDaysWithTimeLogs(List<DayViewModel> days, List<TimeLog> timeLogs);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ZohoPeopleClient.TimeTrackerApi;
 using ZohoPeopleTimeLogger.ViewModel;
 
@@ -61,9 +62,18 @@ namespace ZohoPeopleTimeLogger.Services
             return days;
         }
 
-        public void FillDays(List<DayViewModel> days, List<TimeLog> timeLogs)
+        public void FillDaysWithTimeLogs(List<DayViewModel> days, List<TimeLog> timeLogs)
         {
+            var groupedByDate = timeLogs.GroupBy(x => x.WorkDate);
 
+            foreach (var itemsInLog in groupedByDate)
+            {
+                var dayToFill = days.FirstOrDefault(x => x.Day == itemsInLog.Key.Day);
+                if (dayToFill != null)
+                {
+                    dayToFill.FillLogs(itemsInLog.ToList());
+                }
+            }
         }
     }
 }

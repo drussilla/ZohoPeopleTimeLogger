@@ -41,10 +41,11 @@
                    HorizontalAlignment="Left"
                    Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}"/>
         
-        <TextBlock Text="{Binding Hours}"
+        <TextBlock Text="{Binding Hours, StringFormat={}{0:hh\\:mm}}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
-                   FontSize="45"/>
+                   FontSize="45"
+                   Visibility="{Binding IsFilled, Converter={StaticResource BoolToVisibility}}"/>
 
         <Button Grid.Column="0"
                 HorizontalAlignment="Right"

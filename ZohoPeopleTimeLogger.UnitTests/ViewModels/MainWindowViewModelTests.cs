@@ -66,7 +66,7 @@ namespace ZohoPeopleTimeLogger.UnitTests
             auth.Verify(x => x.SaveAuthenticationData(data));
             daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Once);
             zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(data.UserName, startOfTheMonth, endOfTheMonth, "all", "all"), Times.Once);
-            daysService.Verify(x => x.FillDays(days, timeLogs), Times.Once);
+            daysService.Verify(x => x.FillDaysWithTimeLogs(days, timeLogs), Times.Once);
         }
 
         [Theory, AutoMoqData]
@@ -119,9 +119,10 @@ namespace ZohoPeopleTimeLogger.UnitTests
             Assert.Equal(days, target.Days);
             
             login.Verify(x => x.Login(), Times.Never);
+            zoho.Verify(x => x.Login(data.Token), Times.Once);
             daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Once);
             zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(data.UserName, startOfTheMonth, endOfTheMonth, "all", "all"), Times.Once);
-            daysService.Verify(x => x.FillDays(days, timeLogs), Times.Once);
+            daysService.Verify(x => x.FillDaysWithTimeLogs(days, timeLogs), Times.Once);
         }
 
         [Theory, AutoMoqData]

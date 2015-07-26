@@ -20,7 +20,7 @@ namespace ZohoPeopleTimeLogger
             UnityContainer container = new UnityContainer();
 
             container.RegisterType<IAuthenticationStorage, AuthenticationStorage>();
-            container.RegisterType<IZohoClient, ZohoClient>();
+            container.RegisterType<IZohoClient, ZohoClient>(new ContainerControlledLifetimeManager());
             container.RegisterType<IDialogService, DialogService>();
             container.RegisterType<ILoginController, LoginController>();
             container.RegisterType<IDateTimeService, DateTimeService>();
