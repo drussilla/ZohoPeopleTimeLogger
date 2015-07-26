@@ -95,6 +95,7 @@
     <Compile Include="Controllers\ILoginController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Events\MonthChangedEventArgs.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Model\AuthenticationData.cs" />
     <Compile Include="Services\AuthenticationStorage.cs" />
     <Compile Include="Services\DateTimeService.cs" />

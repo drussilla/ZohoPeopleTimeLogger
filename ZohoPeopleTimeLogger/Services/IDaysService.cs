@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ZohoPeopleClient.TimeTrackerApi;
 using ZohoPeopleTimeLogger.ViewModel;
 
 namespace ZohoPeopleTimeLogger.Services
@@ -7,5 +8,6 @@ namespace ZohoPeopleTimeLogger.Services
     public interface IDaysService
     {
         List<DayViewModel> GetDays(DateTime month);
+        void FillDays(List<DayViewModel> days, List<TimeLog> timeLogs);
     }
 }

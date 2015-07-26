@@ -7,8 +7,10 @@ using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 using ZohoPeopleClient;
+using ZohoPeopleClient.TimeTrackerApi;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Events;
+using ZohoPeopleTimeLogger.Extensions;
 using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;
 using ZohoPeopleTimeLogger.ViewModel;
@@ -25,16 +27,31 @@ namespace ZohoPeopleTimeLogger.UnitTests
             [Frozen]Mock<ILoginController> login,
             [Frozen]Mock<IDaysService> daysService,
             [Frozen]Mock<IMonthPickerViewModel> monthPicker,
-            AuthenticationData data,
+            [Frozen]AuthenticationData data,
             MainWindowViewModel target)
         {
-            var date = DateTime.Now;
+            var startOfTheMonth = new DateTime(2015, 07, 01);
+            var endOfTheMonth = startOfTheMonth.EndOfMonth();
+            var middleOfTheMonth = new DateTime(2015, 07, 15);
             var days = Enumerable.Range(0, 25).Select(x => new DayViewModel()).ToList();
+            var firstLog = new TimeLog { WorkDate = startOfTheMonth, Hours = TimeSpan.FromHours(8) };
+            var secondLog = new TimeLog { WorkDate = endOfTheMonth, Hours = TimeSpan.FromHours(2) };
+            var thirdLog = new TimeLog { WorkDate = middleOfTheMonth, Hours = TimeSpan.FromHours(10) };
+            var timeLogs = new List<TimeLog>
+            {
+                firstLog,
+                secondLog,
+                thirdLog
+            };
+
             auth.Setup(x => x.GetAuthenticationData()).Returns((AuthenticationData)null);
             login.Setup(x => x.Login()).Returns(Task.Run(() => data));
-            monthPicker.Setup(x => x.CurrentDate).Returns(date);
-            daysService.Setup(x => x.GetDays(date))
+            monthPicker.Setup(x => x.CurrentDate).Returns(startOfTheMonth);
+            daysService.Setup(x => x.GetDays(startOfTheMonth))
                 .Returns(() => days);
+            zoho
+                .Setup(x => x.TimeTracker.TimeLog.GetAsync(data.UserName, startOfTheMonth, endOfTheMonth, "all", "all"))
+                .ReturnsAsync(timeLogs);
 
             target.ViewReady();
 
@@ -47,7 +64,9 @@ namespace ZohoPeopleTimeLogger.UnitTests
             
             login.Verify(x => x.Login(), Times.Once);
             auth.Verify(x => x.SaveAuthenticationData(data));
-            daysService.Verify(x => x.GetDays(date), Times.Once);
+            daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Once);
+            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(data.UserName, startOfTheMonth, endOfTheMonth, "all", "all"), Times.Once);
+            daysService.Verify(x => x.FillDays(days, timeLogs), Times.Once);
         }
 
         [Theory, AutoMoqData]
@@ -61,12 +80,35 @@ namespace ZohoPeopleTimeLogger.UnitTests
             [Frozen]AuthenticationData data,
             MainWindowViewModel target)
         {
-            var date = DateTime.Now;
-            var days = Enumerable.Range(0, 25).Select(x => new DayViewModel()).ToList();
-            auth.Setup(x => x.GetAuthenticationData()).Returns(data);
-            monthPicker.Setup(x => x.CurrentDate).Returns(date);
-            daysService.Setup(x => x.GetDays(date))
+            var startOfTheMonth = new DateTime(2015, 07, 01);
+            var endOfTheMonth = startOfTheMonth.EndOfMonth();
+            var middleOfTheMonth = new DateTime(2015, 07, 15);
+            var days = 
+                Enumerable.Range(0, 25)
+                .Select(x => new DayViewModel())
+                .ToList();
+            var firstLog = new TimeLog {WorkDate = startOfTheMonth, Hours = TimeSpan.FromHours(8)};
+            var secondLog = new TimeLog { WorkDate = endOfTheMonth, Hours = TimeSpan.FromHours(2)};
+            var thirdLog = new TimeLog { WorkDate = middleOfTheMonth, Hours = TimeSpan.FromHours(10) };
+            var timeLogs = new List<TimeLog>
+            {
+                firstLog,
+                secondLog,
+                thirdLog
+            };
+
+            auth
+                .Setup(x => x.GetAuthenticationData())
+                .Returns(data);
+            monthPicker
+                .Setup(x => x.CurrentDate)
+                .Returns(startOfTheMonth);
+            daysService
+                .Setup(x => x.GetDays(startOfTheMonth))
                 .Returns(() => days);
+            zoho
+                .Setup(x => x.TimeTracker.TimeLog.GetAsync(data.UserName, startOfTheMonth, endOfTheMonth, "all", "all"))
+                .ReturnsAsync(timeLogs);
             
             target.ViewReady();
 
@@ -75,9 +117,11 @@ namespace ZohoPeopleTimeLogger.UnitTests
             Assert.True(target.LogoutCommand.CanExecute(null));
             Assert.False(target.LoginCommand.CanExecute(null));
             Assert.Equal(days, target.Days);
-
+            
             login.Verify(x => x.Login(), Times.Never);
-            daysService.Verify(x => x.GetDays(date), Times.Once);
+            daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Once);
+            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(data.UserName, startOfTheMonth, endOfTheMonth, "all", "all"), Times.Once);
+            daysService.Verify(x => x.FillDays(days, timeLogs), Times.Once);
         }
 
         [Theory, AutoMoqData]
