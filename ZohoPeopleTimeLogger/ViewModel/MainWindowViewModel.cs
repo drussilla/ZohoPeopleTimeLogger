@@ -51,13 +51,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
             this.daysService = daysService;
             this.loginController = loginController;
             this.authenticationStorage = authenticationStorage;
+            this.zohoClient = zohoClient;
 
             MonthPickerViewModel = monthPickerViewModel;
-            this.zohoClient = zohoClient;
             MonthPickerViewModel.MonthChanged += MonthPickerViewModelOnMonthChanged;
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
             LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
+
+            Days = daysService.GetDays(MonthPickerViewModel.CurrentDate);
         }
 
         public override void ViewReady()
@@ -82,7 +84,10 @@ namespace ZohoPeopleTimeLogger.ViewModel
             Days = daysService.GetDays(month);
 
             var progress = await dialogService.ShowProgress("Loading data from server", "Please wait");
-            progress.SetIndeterminate();
+            if (progress != null)
+            {
+                progress.SetIndeterminate();
+            }
 
             var timeLogs = await zohoClient.TimeTracker.TimeLog.GetAsync(
                     auth.UserName,
@@ -91,7 +96,10 @@ namespace ZohoPeopleTimeLogger.ViewModel
             
             daysService.FillDaysWithTimeLogs(Days, timeLogs);
 
-            await progress.CloseAsync();
+            if (progress != null)
+            {
+                await progress.CloseAsync();
+            }
         }
 
         private async void Login()

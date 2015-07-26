@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Practices.ServiceLocation;
 using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
@@ -19,6 +18,27 @@ namespace ZohoPeopleTimeLogger.UnitTests
 {
     public class MainWindowViewModelTests
     {
+        [Theory, AutoMoqData]
+        public void Ctor_DaysLoaded(
+            [Frozen]Mock<IAuthenticationStorage> auth,
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho,
+            [Frozen]Mock<ILoginController> login,
+            [Frozen]Mock<IDaysService> daysService,
+            [Frozen]Mock<IMonthPickerViewModel> monthPicker)
+        {
+            var date = new DateTime(2015, 04, 22);
+            daysService.Setup(x => x.GetDays(date))
+                .Returns(() => Enumerable.Range(0, 25).Select(x => new DayViewModel()).ToList());
+            monthPicker.Setup(x => x.CurrentDate).Returns(date);
+
+            var target = new MainWindowViewModel(auth.Object, dialog.Object, daysService.Object, login.Object,
+                monthPicker.Object, zoho.Object);
+
+            Assert.Equal(DaysService.MaximumWorkingDaysInMonth, target.Days.Count);
+            daysService.Verify(x => x.GetDays(date), Times.Once);
+        }
+
         [Theory, AutoMoqData]
         public void ViewReady_NoLoginInformationStored_AskForLoginAndSaveValidDataAndLoadDays(
             [Frozen]Mock<IAuthenticationStorage> auth,
@@ -131,6 +151,7 @@ namespace ZohoPeopleTimeLogger.UnitTests
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
             [Frozen]Mock<ILoginController> login,
+            [Frozen]Mock<IDaysService> daysService,
             [Frozen]AuthenticationData data,
             MainWindowViewModel target)
         {
@@ -156,7 +177,7 @@ namespace ZohoPeopleTimeLogger.UnitTests
             var newMonth = new DateTime(2013, 01, 01);
             var days = Enumerable.Range(0, 25).Select(x => new DayViewModel()).ToList();
             daysService.Setup(x => x.GetDays(newMonth)).Returns(days);
-
+            
             monthPicker.Raise(x => x.MonthChanged += null, new MonthChangedEventArgs(newMonth));
 
             daysService.Verify(x => x.GetDays(newMonth), Times.Once);
