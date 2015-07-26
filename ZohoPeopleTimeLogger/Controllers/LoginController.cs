@@ -18,7 +18,7 @@ namespace ZohoPeopleTimeLogger.Controllers
             this.dialogService = dialogService;
         }
 
-        public async Task<AuthenticationData> Login()
+        public async Task<AuthenticationData> LoginWithPassword()
         {
             var loginDetails = await dialogService.ShowLogin();
 
@@ -53,6 +53,11 @@ namespace ZohoPeopleTimeLogger.Controllers
             }
 
             return new AuthenticationData {UserName = loginDetails.Username, Token = token};
+        }
+
+        public void LoginWithToken(string token)
+        {
+            zohoClient.Login(token);
         }
     }
 }

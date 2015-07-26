@@ -73,7 +73,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             {
                 IsLoggedIn = true;
                 UserName = authData.UserName;
-                zohoClient.Login(authData.Token);
+                loginController.LoginWithToken(authData.Token);
 
                 LoadDays(MonthPickerViewModel.CurrentDate, authData);
             }
@@ -104,7 +104,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         private async void Login()
         {
-            var authenticationData = await loginController.Login();
+            var authenticationData = await loginController.LoginWithPassword();
 
             if (authenticationData != null)
             {

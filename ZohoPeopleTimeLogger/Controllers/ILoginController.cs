@@ -5,6 +5,8 @@ namespace ZohoPeopleTimeLogger.Controllers
 {
     public interface ILoginController
     {
-        Task<AuthenticationData> Login();
+        Task<AuthenticationData> LoginWithPassword();
+
+        void LoginWithToken(string token);
     }
 }
