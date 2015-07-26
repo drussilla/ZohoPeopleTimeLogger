@@ -28,12 +28,15 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight">
@@ -95,6 +98,7 @@
     <Compile Include="Controllers\ILoginController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Events\MonthChangedEventArgs.cs" />
+    <Compile Include="Exceptions\JobNotFoundException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Model\AuthenticationData.cs" />
     <Compile Include="Services\AuthenticationStorage.cs" />
@@ -106,6 +110,7 @@
     <Compile Include="Services\IDialogService.cs" />
     <Compile Include="Services\IDaysService.cs" />
     <Compile Include="ViewModel\DayViewModel.cs" />
+    <Compile Include="ViewModel\IDayViewModel.cs" />
     <Compile Include="ViewModel\IMonthPickerViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
@@ -113,9 +118,6 @@
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="View\DayView.xaml.cs">
       <DependentUpon>DayView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LoginView.xaml.cs">
-      <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MonthPickerView.xaml.cs">
       <DependentUpon>MonthPickerView.xaml</DependentUpon>
@@ -137,10 +139,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DayView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,6 +185,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
+    <Resource Include="Images\icon.png" />
+    <Resource Include="Images\icon.ico" />
     <Content Include="Libs\Newtonsoft.Json.dll" />
     <Resource Include="Libs\Newtonsoft.Json.xml" />
     <Content Include="Libs\ZohoPeopleClient.dll" />

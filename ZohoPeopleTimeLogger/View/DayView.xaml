@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:ZohoPeopleTimeLogger.ViewModel"
              xmlns:converters="clr-namespace:ZohoPeopleTimeLogger.Converters"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="200"
              Margin="2"
@@ -45,14 +46,38 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    FontSize="45"
-                   Visibility="{Binding IsFilled, Converter={StaticResource BoolToVisibility}}"/>
-
-        <Button Grid.Column="0"
-                HorizontalAlignment="Right"
+                   Visibility="{Binding IsFilled, Converter={StaticResource BoolToVisibility}}"
+                   />
+        <!---->
+        <TextBlock Text="{Binding JobsDescription}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Margin="0 60 0 0">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility"
+                    Value="Hidden"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IsMouseOver}" Value="True"/>
+                                <Condition Binding="{Binding IsActive}" Value="True"/>
+                                <Condition Binding="{Binding IsFilled}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <Button HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Margin="5"
                 Width="40"
-                Height="40">
+                Height="40"
+                Command="{Binding DeleteCommand}">
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource MetroCircleButtonStyle}">
                     <Setter Property="Visibility"
@@ -80,5 +105,13 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>
+
+        <Grid Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Background}"
+              Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
+            <controls:ProgressRing IsActive="True"
+                               VerticalAlignment="Stretch"
+                               HorizontalAlignment="Stretch"
+                               />
+        </Grid>
     </Grid>
 </UserControl>

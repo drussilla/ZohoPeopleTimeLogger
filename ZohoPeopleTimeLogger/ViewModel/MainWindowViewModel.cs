@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Practices.Unity;
@@ -37,7 +38,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public IMonthPickerViewModel MonthPickerViewModel { get; private set; }
 
-        public List<DayViewModel> Days { get; set; } 
+        public List<IDayViewModel> Days { get; set; } 
 
         public MainWindowViewModel(
             IAuthenticationStorage authenticationStorage,
@@ -58,6 +59,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
             LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
+            FillTimeCommand = new RelayCommand(FillTime);
 
             Days = daysService.GetDays(MonthPickerViewModel.CurrentDate);
         }
@@ -79,6 +81,12 @@ namespace ZohoPeopleTimeLogger.ViewModel
             }
         }
 
+        public override void Cleanup()
+        {
+            MonthPickerViewModel.MonthChanged -= MonthPickerViewModelOnMonthChanged;
+            base.Cleanup();
+        }
+
         private async void LoadDays(DateTime month, AuthenticationData auth)
         {
             Days = daysService.GetDays(month);
@@ -89,12 +97,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 progress.SetIndeterminate();
             }
 
-            var timeLogs = await zohoClient.TimeTracker.TimeLog.GetAsync(
-                    auth.UserName,
-                    month.BeginOfMonth(), 
-                    month.EndOfMonth());
-            
-            daysService.FillDaysWithTimeLogs(Days, timeLogs);
+            await daysService.FillDaysWithTimeLogsAsync(Days, month);
 
             if (progress != null)
             {
@@ -138,10 +141,22 @@ namespace ZohoPeopleTimeLogger.ViewModel
             LoadDays(monthChangedEventArgs.NewMonth, authenticationStorage.GetAuthenticationData());
         }
 
-        public override void Cleanup()
+        private void FillTime()
         {
-            MonthPickerViewModel.MonthChanged -= MonthPickerViewModelOnMonthChanged;
-            base.Cleanup();
+            if (AnyNotFilledDays())
+            {
+                daysService.FillMissingTimeLogsAsync(Days);
+            }
+            else
+            {
+                dialogService.ShowMessageAsync("Relax! You already happy!",
+                    "You have no empty days in this month. So don't worry, boss will be happy!");
+            }
+        }
+
+        private bool AnyNotFilledDays()
+        {
+            return Days.Any(x => x.IsActive && !x.IsFilled);
         }
     }
 }

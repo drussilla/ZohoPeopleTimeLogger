@@ -13,5 +13,10 @@ namespace ZohoPeopleTimeLogger.Extensions
         {
             return date.BeginOfMonth().AddMonths(1).AddDays(-1);
         }
+
+        public static DateTime MiddleOfMonth(this DateTime date)
+        {
+            return date.BeginOfMonth().AddDays(15);
+        }
     }
 }

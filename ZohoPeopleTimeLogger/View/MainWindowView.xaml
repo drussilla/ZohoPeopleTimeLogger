@@ -16,7 +16,9 @@
                       Width="1000"
                       Height="850"
                       WindowStartupLocation="CenterScreen"
-                      Title="Zoho People Time Logger" d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}">
+                      Title="Zoho People Time Logger" 
+                      d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}"
+                      Icon="/Images/icon.png">
     <i:Interaction.Behaviors>
         <behaviours1:BorderlessWindowBehavior />
         <behaviours:ViewModelBehaviour ViewModelType="{x:Type viewModel:MainWindowViewModel}" />
