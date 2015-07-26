@@ -126,6 +126,11 @@ namespace ZohoPeopleTimeLogger.ViewModel
             authenticationStorage.Clear();
             IsLoggedIn = false;
             UserName = null;
+
+            foreach (var dayViewModel in Days)
+            {
+                dayViewModel.Clear();
+            }
         }
 
         private void MonthPickerViewModelOnMonthChanged(object sender, MonthChangedEventArgs monthChangedEventArgs)

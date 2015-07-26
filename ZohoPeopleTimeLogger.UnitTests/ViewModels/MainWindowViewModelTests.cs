@@ -156,6 +156,9 @@ namespace ZohoPeopleTimeLogger.UnitTests
             MainWindowViewModel target)
         {
             auth.Setup(x => x.GetAuthenticationData()).Returns(data);
+            daysService.Setup(x => x.GetDays(It.IsAny<DateTime>()))
+                .Returns(Enumerable.Range(0, 25).Select(x => new DayViewModel { IsFilled = true }).ToList());
+            
             target.ViewReady();
             
             target.LogoutCommand.Execute(null);
@@ -164,6 +167,7 @@ namespace ZohoPeopleTimeLogger.UnitTests
             Assert.Null(target.UserName);
             Assert.False(target.LogoutCommand.CanExecute(null));
             Assert.True(target.LoginCommand.CanExecute(null));
+            Assert.All(target.Days, x => { Assert.False(x.IsFilled); });
 
             auth.Verify(x => x.Clear(), Times.Once);
         }

@@ -48,5 +48,12 @@ namespace ZohoPeopleTimeLogger.ViewModel
         }
 
         public ICommand Delete { get; set; }
+
+        public void Clear()
+        {
+            timeLogs = null;
+            IsFilled = false;
+            RaisePropertyChanged("Hours");
+        }
     }
 }
