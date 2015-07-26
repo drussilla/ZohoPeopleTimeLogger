@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Input;
-
-namespace ZohoPeopleTimeLogger.View
+﻿namespace ZohoPeopleTimeLogger.View
 {
     /// <summary>
     /// Interaction logic for DayView.xaml
@@ -11,16 +8,6 @@ namespace ZohoPeopleTimeLogger.View
         public DayView()
         {
             InitializeComponent();
-        }
-
-        private void DayViewOnMouseEnter(object sender, MouseEventArgs e)
-        {
-            DeleteButton.Visibility = Visibility.Visible;
-        }
-
-        private void DayViewOnMouseLeave(object sender, MouseEventArgs e)
-        {
-            DeleteButton.Visibility = Visibility.Hidden;
         }
     }
 }

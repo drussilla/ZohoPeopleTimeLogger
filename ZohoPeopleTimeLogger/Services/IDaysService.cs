@@ -6,6 +6,6 @@ namespace ZohoPeopleTimeLogger.Services
 {
     public interface IDaysService
     {
-        List<DayViewModel> GetDaysAsync(DateTime month);
+        List<DayViewModel> GetDays(DateTime month);
     }
 }

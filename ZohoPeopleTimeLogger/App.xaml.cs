@@ -4,6 +4,7 @@ using Microsoft.Practices.Unity;
 using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Services;
+using ZohoPeopleTimeLogger.ViewModel;
 
 namespace ZohoPeopleTimeLogger
 {
@@ -24,6 +25,7 @@ namespace ZohoPeopleTimeLogger
             container.RegisterType<ILoginController, LoginController>();
             container.RegisterType<IDateTimeService, DateTimeService>();
             container.RegisterType<IDaysService, DaysService>();
+            container.RegisterType<IMonthPickerViewModel, MonthPickerViewModel>();
 
             ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
         }

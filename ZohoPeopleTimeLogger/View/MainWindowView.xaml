@@ -125,11 +125,9 @@
 
             <view:DayView Grid.Row="1"
                           Grid.Column="0"
-                          Background="#f9f9f9"
                           DataContext="{Binding Days[0]}" />
             <view:DayView Grid.Row="1"
                           Grid.Column="1"
-                          Background="#f9f9f9"
                           DataContext="{Binding Days[1]}" />
             <view:DayView Grid.Row="1"
                           Grid.Column="2"
@@ -149,15 +147,12 @@
                           DataContext="{Binding Days[6]}" />
             <view:DayView Grid.Row="2"
                           Grid.Column="2"
-                          Background="#fff3f1"
                           DataContext="{Binding Days[7]}" />
             <view:DayView Grid.Row="2"
                           Grid.Column="3"
-                          Background="#fff3f1"
                           DataContext="{Binding Days[8]}" />
             <view:DayView Grid.Row="2"
                           Grid.Column="4"
-                          Background="#fff3f1"
                           DataContext="{Binding Days[9]}" />
 
             <view:DayView Grid.Row="3"

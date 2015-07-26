@@ -4,13 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:ZohoPeopleTimeLogger.ViewModel"
+             xmlns:converters="clr-namespace:ZohoPeopleTimeLogger.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="200"
              Margin="2"
-             Background="#f5fcff"
-             MouseEnter="DayViewOnMouseEnter"
-             MouseLeave="DayViewOnMouseLeave" 
              d:DataContext="{d:DesignInstance viewModel:DayViewModel}">
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Setter Property="Background"
+                    Value="#fff3f1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsActive}"
+                             Value="False">
+                    <Setter Property="Background"
+                            Value="#f9f9f9"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsFilled}"
+                             Value="True">
+                    <Setter Property="Background"
+                            Value="#f5fcff"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" TrueValue="Visible" FalseValue="Collapsed" />
+    </UserControl.Resources>
     <!-- Background="#fff3f1" Empty -->
     <!--Background="#f9f9f9" Disabled -->
     <!--Background="#f5fcff" Filled -->
@@ -19,7 +38,8 @@
                    Margin="10 5"
                    FontSize="15"
                    VerticalAlignment="Top"
-                   HorizontalAlignment="Left"/>
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}"/>
         
         <TextBlock Text="{Binding Hours}"
                    VerticalAlignment="Center"
@@ -30,11 +50,26 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Margin="5"
-                Style="{DynamicResource MetroCircleButtonStyle}"
                 Width="40"
-                Height="40"
-                x:Name="DeleteButton"
-                Visibility="Hidden">
+                Height="40">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource MetroCircleButtonStyle}">
+                    <Setter Property="Visibility"
+                    Value="Hidden"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IsMouseOver}" Value="True"/>
+                                <Condition Binding="{Binding IsActive}" Value="True"/>
+                                <Condition Binding="{Binding IsFilled}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
             <Rectangle Width="12"
                            Height="12"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">

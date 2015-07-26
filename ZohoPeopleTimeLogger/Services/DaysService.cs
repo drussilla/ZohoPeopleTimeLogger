@@ -9,7 +9,7 @@ namespace ZohoPeopleTimeLogger.Services
     {
         public const int MaximumWorkingDaysInMonth = 25;
 
-        public List<DayViewModel> GetDaysAsync(DateTime month)
+        public List<DayViewModel> GetDays(DateTime month)
         {
             var startOfMonth = new DateTime(month.Year, month.Month, 1);
             var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);

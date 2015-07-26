@@ -28,7 +28,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         {
             var target = new DaysService();
 
-            var days = target.GetDaysAsync(month);
+            var days = target.GetDays(month);
 
             for (int i = 0; i < DaysService.MaximumWorkingDaysInMonth; i++)
             {

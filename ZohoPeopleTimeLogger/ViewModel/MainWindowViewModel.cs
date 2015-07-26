@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Practices.Unity;
 using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Controllers;
+using ZohoPeopleTimeLogger.Events;
 using ZohoPeopleTimeLogger.Services;
 
 namespace ZohoPeopleTimeLogger.ViewModel
@@ -29,7 +31,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public string UserName { get; private set; }
 
-        public MonthPickerViewModel MonthPickerViewModel { get; private set; }
+        public IMonthPickerViewModel MonthPickerViewModel { get; private set; }
 
         public List<DayViewModel> Days { get; set; } 
 
@@ -38,7 +40,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             IDialogService dialogService,
             IDaysService daysService, 
             ILoginController loginController,
-            MonthPickerViewModel monthPickerViewModel)
+            IMonthPickerViewModel monthPickerViewModel)
         {
             this.dialogService = dialogService;
             this.daysService = daysService;
@@ -46,6 +48,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             this.authenticationStorage = authenticationStorage;
 
             MonthPickerViewModel = monthPickerViewModel;
+            MonthPickerViewModel.MonthChanged += MonthPickerViewModelOnMonthChanged;
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
             LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
@@ -63,13 +66,13 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 IsLoggedIn = true;
                 UserName = authData.UserName;
 
-                LoadDays();
+                LoadDays(MonthPickerViewModel.CurrentDate);
             }
         }
 
-        private void LoadDays()
+        private void LoadDays(DateTime month)
         {
-            Days = daysService.GetDaysAsync(MonthPickerViewModel.CurrentDate);
+            Days = daysService.GetDays(month);
         }
 
         private async void Login()
@@ -81,6 +84,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 authenticationStorage.SaveAuthenticationData(authenticationData);
                 IsLoggedIn = true;
                 UserName = authenticationData.UserName;
+
+                LoadDays(MonthPickerViewModel.CurrentDate);
             }
             else
             {
@@ -94,6 +99,17 @@ namespace ZohoPeopleTimeLogger.ViewModel
             authenticationStorage.Clear();
             IsLoggedIn = false;
             UserName = null;
+        }
+
+        private void MonthPickerViewModelOnMonthChanged(object sender, MonthChangedEventArgs monthChangedEventArgs)
+        {
+            LoadDays(monthChangedEventArgs.NewMonth);
+        }
+
+        public override void Cleanup()
+        {
+            MonthPickerViewModel.MonthChanged -= MonthPickerViewModelOnMonthChanged;
+            base.Cleanup();
         }
     }
 }

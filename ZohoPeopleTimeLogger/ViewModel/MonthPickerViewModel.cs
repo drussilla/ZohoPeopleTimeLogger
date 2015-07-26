@@ -6,7 +6,7 @@ using ZohoPeopleTimeLogger.Services;
 
 namespace ZohoPeopleTimeLogger.ViewModel
 {
-    public class MonthPickerViewModel : ViewModel
+    public class MonthPickerViewModel : ViewModel, IMonthPickerViewModel
     {
         public DateTime CurrentDate { get; private set; }
 
@@ -14,7 +14,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public ICommand PreviousMonthCommand { get; private set; }
 
-        public EventHandler<MonthChangedEventArgs> MonthChanged = delegate { };
+        public event EventHandler<MonthChangedEventArgs> MonthChanged = delegate { };
 
         public MonthPickerViewModel(IDateTimeService dateTimeService)
         {
