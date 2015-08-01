@@ -22,6 +22,7 @@ namespace ZohoPeopleTimeLogger.Services
                             {
                                 AnimateHide = false,
                                 AnimateShow = true,
+                                UsernameWatermark = "Email...",
                                 NegativeButtonVisibility = Visibility.Visible
                             });
         }
