@@ -4,6 +4,7 @@ using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 using ZohoPeopleClient;
+using ZohoPeopleClient.Model.TimeTrackerApi;
 using ZohoPeopleClient.TimeTrackerApi;
 using ZohoPeopleTimeLogger.ViewModel;
 

@@ -64,7 +64,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             Days = daysService.GetDays(MonthPickerViewModel.CurrentDate);
         }
 
-        public override void ViewReady()
+        public override async void ViewReady()
         {
             var authData = authenticationStorage.GetAuthenticationData();
             if (authData == null)
@@ -75,9 +75,17 @@ namespace ZohoPeopleTimeLogger.ViewModel
             {
                 IsLoggedIn = true;
                 UserName = authData.UserName;
-                loginController.LoginWithToken(authData.Token);
+                bool isTokenValid = await loginController.LoginWithToken(authData);
 
-                LoadDays(MonthPickerViewModel.CurrentDate, authData);
+                if (isTokenValid)
+                {
+                    LoadDays(MonthPickerViewModel.CurrentDate, authData);
+                }
+                else
+                {
+                    Logout();
+                    Login();
+                }
             }
         }
 

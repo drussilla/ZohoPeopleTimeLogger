@@ -2,6 +2,7 @@
 using System.Windows;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using ZohoPeopleTimeLogger.Controllers;
 
 namespace ZohoPeopleTimeLogger.Services
 {
@@ -25,9 +26,10 @@ namespace ZohoPeopleTimeLogger.Services
                             });
         }
 
-        public Task<ProgressDialogController> ShowProgress(string title, string message)
+        public async Task<IProgressDialogController> ShowProgress(string title, string message)
         {
-            return currentWindow.ShowProgressAsync(title, message);
+            var controller = await currentWindow.ShowProgressAsync(title, message);
+            return new MahAppsProgressDialogControllerAdapter(controller);
         }
 
         public Task<MessageDialogResult> ShowMessageAsync(string title, string errorMessage)

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ZohoPeopleClient.TimeTrackerApi;
+using ZohoPeopleClient.Model.TimeTrackerApi;
 
 namespace ZohoPeopleTimeLogger.ViewModel
 {

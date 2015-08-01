@@ -7,6 +7,6 @@ namespace ZohoPeopleTimeLogger.Controllers
     {
         Task<AuthenticationData> LoginWithPassword();
 
-        void LoginWithToken(string token);
+        Task<bool> LoginWithToken(AuthenticationData authData);
     }
 }

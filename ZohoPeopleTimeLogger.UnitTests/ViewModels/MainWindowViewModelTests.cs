@@ -99,6 +99,9 @@ namespace ZohoPeopleTimeLogger.UnitTests
             daysService
                 .Setup(x => x.GetDays(startOfTheMonth))
                 .Returns(() => days);
+            login
+                .Setup(x => x.LoginWithToken(data))
+                .ReturnsAsync(true);
             
             target.ViewReady();
 
@@ -109,9 +112,50 @@ namespace ZohoPeopleTimeLogger.UnitTests
             Assert.Equal(days, target.Days);
             
             login.Verify(x => x.LoginWithPassword(), Times.Never);
-            login.Verify(x => x.LoginWithToken(data.Token), Times.Once);
+            login.Verify(x => x.LoginWithToken(data), Times.Once);
             daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Once);
             daysService.Verify(x => x.FillDaysWithTimeLogsAsync(days, startOfTheMonth), Times.Once);
+        }
+
+        [Theory, AutoMoqData]
+        public void ViewReady_LoginInformationStoredAndTokenIsNotValid_ShowLoginWithPassword(
+            [Frozen]Mock<IAuthenticationStorage> auth,
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho,
+            [Frozen]Mock<ILoginController> login,
+            [Frozen]Mock<IDaysService> daysService,
+            [Frozen]Mock<IMonthPickerViewModel> monthPicker,
+            [Frozen]AuthenticationData data,
+            MainWindowViewModel target)
+        {
+            var startOfTheMonth = new DateTime(2015, 07, 01);
+            var days =
+                Enumerable.Range(0, 25)
+                .Select(x => DayViewModel.DayFromOtherMonth(zoho.Object))
+                .ToList();
+
+            auth
+                .Setup(x => x.GetAuthenticationData())
+                .Returns(data);
+            monthPicker
+                .Setup(x => x.CurrentDate)
+                .Returns(startOfTheMonth);
+            daysService
+                .Setup(x => x.GetDays(startOfTheMonth))
+                .Returns(() => days);
+            login
+                .Setup(x => x.LoginWithToken(data))
+                .ReturnsAsync(false);
+
+            target.ViewReady();
+
+            Assert.False(target.IsLoggedIn);
+            
+            login.Verify(x => x.LoginWithPassword(), Times.Once);
+            login.Verify(x => x.LoginWithToken(data), Times.Once);
+            auth.Verify(x => x.Clear());
+            daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Never);
+            daysService.Verify(x => x.FillDaysWithTimeLogsAsync(days, startOfTheMonth), Times.Never);
         }
 
         [Theory, AutoMoqData]

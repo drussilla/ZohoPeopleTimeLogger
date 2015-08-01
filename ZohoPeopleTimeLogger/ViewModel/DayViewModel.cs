@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using PropertyChanged;
 using ZohoPeopleClient;
+using ZohoPeopleClient.Model.TimeTrackerApi;
 using ZohoPeopleClient.TimeTrackerApi;
 
 namespace ZohoPeopleTimeLogger.ViewModel
