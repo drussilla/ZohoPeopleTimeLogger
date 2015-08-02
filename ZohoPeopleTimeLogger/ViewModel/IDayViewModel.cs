@@ -8,8 +8,6 @@ namespace ZohoPeopleTimeLogger.ViewModel
 {
     public interface IDayViewModel
     {
-        void FillLogs(List<TimeLog> logs);
-        Task FillHoursAsync(string user, string jobId);
         bool IsActive { get; set; }
         bool IsFilled { get; set; }
         int Day { get; set; }
@@ -17,6 +15,15 @@ namespace ZohoPeopleTimeLogger.ViewModel
         ICommand DeleteCommand { get; set; }
         DateTime Date { get; }
         string JobsDescription { get; }
+        bool IsHoliday { get; }
+        string HolidayName { get; }
+
+        void FillLogs(List<TimeLog> logs);
+
+        Task FillHoursAsync(string user, string jobId);
+        
         void Clear();
+
+        void MarkAsHoliday(string name);
     }
 }

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections;
 using Moq;
-using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-using Xunit.Extensions;
 using ZohoPeopleTimeLogger.Services;
 using ZohoPeopleTimeLogger.ViewModel;
 
-namespace ZohoPeopleTimeLogger.UnitTests
+namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
 {
     public class MonthPickerViewModelTests
     {

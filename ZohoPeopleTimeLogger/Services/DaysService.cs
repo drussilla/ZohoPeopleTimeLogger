@@ -13,8 +13,10 @@ namespace ZohoPeopleTimeLogger.Services
     {
         private readonly IZohoClient zohoClient;
         private readonly IAuthenticationStorage auth;
-        public const int MaximumWorkingDaysInMonth = 25;
 
+        public const string DayOffHolidayRemark = "Day off for all employees";
+        public const int MaximumWorkingDaysInMonth = 25;
+        
         public DaysService(IZohoClient zohoClient, IAuthenticationStorage auth)
         {
             this.zohoClient = zohoClient;
@@ -75,10 +77,16 @@ namespace ZohoPeopleTimeLogger.Services
 
         public async Task FillDaysWithTimeLogsAsync(List<IDayViewModel> days, DateTime month)
         {
+            await FillTimeLogs(days, month);
+            await FillHolidays(days);
+        }
+
+        private async Task FillTimeLogs(List<IDayViewModel> days, DateTime month)
+        {
             var timeLogs = await zohoClient.TimeTracker.TimeLog.GetAsync(
-                    auth.GetAuthenticationData().UserName,
-                    month.BeginOfMonth(),
-                    month.EndOfMonth());
+                auth.GetAuthenticationData().UserName,
+                month.BeginOfMonth(),
+                month.EndOfMonth());
 
             var groupedByDate = timeLogs.GroupBy(x => x.WorkDate);
 
@@ -88,6 +96,21 @@ namespace ZohoPeopleTimeLogger.Services
                 if (dayToFill != null)
                 {
                     dayToFill.FillLogs(itemsInLog.ToList());
+                }
+            }
+        }
+
+        private async Task FillHolidays(List<IDayViewModel> days)
+        {
+            var holidays = await zohoClient.Leave.GetHolidaysAsync(auth.GetAuthenticationData().UserName);
+
+            foreach (var day in days)
+            {
+                var holiday = holidays.FirstOrDefault(x => x.FromDate <= day.Date && x.ToDate >= day.Date);
+                if (holiday != null && 
+                    holiday.Remarks.Equals(DayOffHolidayRemark, StringComparison.OrdinalIgnoreCase))
+                {
+                    day.MarkAsHoliday(holiday.Name);
                 }
             }
         }

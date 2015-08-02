@@ -8,7 +8,6 @@ using GalaSoft.MvvmLight.CommandWpf;
 using PropertyChanged;
 using ZohoPeopleClient;
 using ZohoPeopleClient.Model.TimeTrackerApi;
-using ZohoPeopleClient.TimeTrackerApi;
 
 namespace ZohoPeopleTimeLogger.ViewModel
 {
@@ -17,41 +16,12 @@ namespace ZohoPeopleTimeLogger.ViewModel
         private readonly IZohoClient zohoClient;
         private List<TimeLog> timeLogs;
 
-        public bool IsBusy { get; private set; }
-
-        public static IDayViewModel DayFromOtherMonth(IZohoClient zohoClient)
-        {
-            return new DayViewModel(zohoClient) { IsActive = false };
-        }
-
-        public static IDayViewModel DayFromThisMonth(int day, DateTime month, IZohoClient zohoClient)
-        {
-            return new DayViewModel(zohoClient) { IsActive = true, Day = day, Date = new DateTime(month.Year, month.Month, day)};
-        }
-
-        private DayViewModel(IZohoClient zohoClient)
-        {
-            this.zohoClient = zohoClient;
-            DeleteCommand = new RelayCommand(DeleteTimeLog);
-        }
-
-        public void FillLogs(List<TimeLog> logs)
-        {
-            timeLogs = logs;
-            IsFilled = true;
-            RaisePropertyChanged("Hours");
-        }
-
-        public async Task FillHoursAsync(string user, string jobId)
-        {
-            IsBusy = true;
-            await zohoClient.TimeTracker.TimeLog.AddAsync(user, Date, jobId, TimeSpan.FromHours(8), "non-billable");
-            var logsItemsForThisDay = await zohoClient.TimeTracker.TimeLog.GetAsync(user, Date, Date);
-            IsBusy = false;
-            FillLogs(logsItemsForThisDay);
-        }
-
+        public bool IsHoliday { get; private set; }
+        public string HolidayName { get; private set; }
+        
         public bool IsActive { get; set; }
+
+        public bool IsBusy { get; private set; }
 
         [AlsoNotifyFor("JobsDescription")]
         public bool IsFilled { get; set; }
@@ -74,7 +44,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
         public ICommand DeleteCommand { get; set; }
 
         public DateTime Date { get; private set; }
-        
+
         public string JobsDescription
         {
             get
@@ -88,7 +58,58 @@ namespace ZohoPeopleTimeLogger.ViewModel
             }
         }
 
+        public static IDayViewModel DayFromOtherMonth(IZohoClient zohoClient)
+        {
+            return new DayViewModel(zohoClient) {IsActive = false};
+        }
+
+        public static IDayViewModel DayFromThisMonth(int day, DateTime month, IZohoClient zohoClient)
+        {
+            return new DayViewModel(zohoClient)
+            {
+                IsActive = true,
+                Day = day,
+                Date = new DateTime(month.Year, month.Month, day)
+            };
+        }
+
+        private DayViewModel(IZohoClient zohoClient)
+        {
+            this.zohoClient = zohoClient;
+            DeleteCommand = new RelayCommand(DeleteTimeLog);
+        }
+
+        public void FillLogs(List<TimeLog> logs)
+        {
+            timeLogs = logs;
+            IsFilled = true;
+            
+            RaisePropertyChanged("Hours");
+        }
+
+        public void MarkAsHoliday(string name)
+        {
+            IsHoliday = true;
+            HolidayName = name;
+        }
+
+        public async Task FillHoursAsync(string user, string jobId)
+        {
+            IsBusy = true;
+            await zohoClient.TimeTracker.TimeLog.AddAsync(user, Date, jobId, TimeSpan.FromHours(8), "non-billable");
+            var logsItemsForThisDay = await zohoClient.TimeTracker.TimeLog.GetAsync(user, Date, Date);
+            IsBusy = false;
+            FillLogs(logsItemsForThisDay);
+        }
+
         public void Clear()
+        {
+            ClearTimeLogInformation();
+            IsHoliday = false;
+            HolidayName = null;
+        }
+
+        private void ClearTimeLogInformation()
         {
             timeLogs = null;
             IsFilled = false;
@@ -104,7 +125,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 await zohoClient.TimeTracker.TimeLog.DeleteAsync(timeLog.TimelogId);
             }
 
-            Clear();
+            ClearTimeLogInformation();
 
             IsBusy = false;
         }

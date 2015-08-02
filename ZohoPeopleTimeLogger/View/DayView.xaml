@@ -25,6 +25,11 @@
                     <Setter Property="Background"
                             Value="#f5fcff"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsHoliday}"
+                             Value="True">
+                    <Setter Property="Background"
+                            Value="#F7FFF5"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Style>
@@ -35,13 +40,19 @@
     <!--Background="#f9f9f9" Disabled -->
     <!--Background="#f5fcff" Filled -->
     <Grid>
-        <TextBlock Text="{Binding Day, StringFormat={}{0:D2}}"
-                   Margin="10 5"
-                   FontSize="15"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Left"
-                   Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}"/>
-        
+        <StackPanel Orientation="Horizontal"
+                    Margin="10 5" 
+                    Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}"
+                    VerticalAlignment="Top"
+                   HorizontalAlignment="Left">
+            <TextBlock Text="{Binding Day, StringFormat={}{0:D2}}"
+                       FontSize="15"/>
+            <TextBlock Text="{Binding HolidayName}"
+                       FontSize="15"
+                       Visibility="{Binding IsHoliday, Converter={StaticResource BoolToVisibility}}"
+                       Margin="15 0 0 0"/>
+        </StackPanel>
+
         <TextBlock Text="{Binding Hours, StringFormat={}{0:hh\\:mm}}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"

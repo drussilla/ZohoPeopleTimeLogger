@@ -12,7 +12,7 @@ using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;
 using ZohoPeopleTimeLogger.ViewModel;
 
-namespace ZohoPeopleTimeLogger.UnitTests
+namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
 {
     public class MainWindowViewModelTests
     {
