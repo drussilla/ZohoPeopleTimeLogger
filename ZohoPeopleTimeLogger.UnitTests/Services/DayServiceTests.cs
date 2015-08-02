@@ -189,9 +189,16 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             var notFilledDay2 = new Mock<IDayViewModel>();
             notFilledDay2.Setup(x => x.IsActive).Returns(true);
             notFilledDay2.Setup(x => x.IsFilled).Returns(false);
-            notFilledDay1.Setup(x => x.Date).Returns(startOfTheMonth.AddDays(1));
+            notFilledDay2.Setup(x => x.Date).Returns(startOfTheMonth.AddDays(1));
             days.Add(notFilledDay2.Object);
-            
+
+            var notFilledHolidayDay = new Mock<IDayViewModel>();
+            notFilledHolidayDay.Setup(x => x.IsActive).Returns(true);
+            notFilledHolidayDay.Setup(x => x.IsFilled).Returns(false);
+            notFilledHolidayDay.Setup(x => x.IsHoliday).Returns(true);
+            notFilledHolidayDay.Setup(x => x.Date).Returns(startOfTheMonth.AddDays(2));
+            days.Add(notFilledHolidayDay.Object);
+
             var filledDay2 = new Mock<IDayViewModel>();
             filledDay2.Setup(x => x.IsActive).Returns(true);
             filledDay2.Setup(x => x.IsFilled).Returns(true);
@@ -217,6 +224,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             filledDay1.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             notFilledDay1.Verify(x => x.FillHoursAsync(user, job1.JobId), Times.Once);
             notFilledDay2.Verify(x => x.FillHoursAsync(user, job1.JobId), Times.Once);
+            notFilledHolidayDay.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             dayFromOtherMonth2.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             filledDay2.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }

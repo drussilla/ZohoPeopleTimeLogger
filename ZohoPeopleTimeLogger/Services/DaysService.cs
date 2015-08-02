@@ -117,7 +117,7 @@ namespace ZohoPeopleTimeLogger.Services
 
         public async Task FillMissingTimeLogsAsync(List<IDayViewModel> days)
         {
-            var daysToFill = days.Where(x => x.IsActive && !x.IsFilled).ToList();
+            var daysToFill = days.Where(x => x.IsActive && !x.IsFilled && !x.IsHoliday).ToList();
             var jobId = await FindJobForThisMonth(daysToFill.First().Date.MiddleOfMonth());
             
             foreach (var dayViewModel in daysToFill)
