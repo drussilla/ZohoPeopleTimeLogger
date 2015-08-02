@@ -56,7 +56,7 @@ namespace ZohoPeopleTimeLogger.Services
                     {
                         days.Add(DayViewModel.DayFromThisMonth(currentDay, month, zohoClient));
 
-                        if ((i + 1) % 5 == 0)
+                        if (IsWeekEnded(i))
                         {
                             currentDay += 3;
                         }
@@ -73,6 +73,11 @@ namespace ZohoPeopleTimeLogger.Services
             }
 
             return days;
+        }
+
+        private static bool IsWeekEnded(int i)
+        {
+            return (i + 1) % 5 == 0;
         }
 
         public async Task FillDaysWithTimeLogsAsync(List<IDayViewModel> days, DateTime month)
