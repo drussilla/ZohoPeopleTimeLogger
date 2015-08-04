@@ -33,7 +33,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             var target = new MainWindowViewModel(auth.Object, dialog.Object, daysService.Object, login.Object,
                 monthPicker.Object, zoho.Object);
 
-            Assert.Equal(DaysService.MaximumWorkingDaysInMonth, target.Days.Count);
+            Assert.Equal(DaysService.TotalDaysInATable, target.Days.Count);
             daysService.Verify(x => x.GetDays(date), Times.Once);
         }
 

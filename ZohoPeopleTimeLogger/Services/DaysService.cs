@@ -15,7 +15,7 @@ namespace ZohoPeopleTimeLogger.Services
         private readonly IAuthenticationStorage auth;
 
         public const string DayOffHolidayRemark = "Day off for all employees";
-        public const int MaximumWorkingDaysInMonth = 25;
+        public const int TotalDaysInATable = 25;
         
         public DaysService(IZohoClient zohoClient, IAuthenticationStorage auth)
         {
@@ -25,44 +25,44 @@ namespace ZohoPeopleTimeLogger.Services
 
         public List<IDayViewModel> GetDays(DateTime month)
         {
-            var startOfMonth = new DateTime(month.Year, month.Month, 1);
-            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+            var startOfMonth = month.BeginOfMonth();
+            var endOfMonth = month.EndOfMonth();
             
             var days = new List<IDayViewModel>();
 
-            int firstDayIndex = (int)startOfMonth.DayOfWeek - 1;
-            int currentDay = 1;
+            int firstDayOfMonthIndex = (int)startOfMonth.DayOfWeek - 1;
+            int currentMonthDay = 1;
 
             if (startOfMonth.DayOfWeek == DayOfWeek.Sunday)
             {
-                currentDay++;
-                firstDayIndex = 0;
+                currentMonthDay++;
+                firstDayOfMonthIndex = 0;
             }
             else if (startOfMonth.DayOfWeek == DayOfWeek.Saturday)
             {
-                currentDay += 2;
-                firstDayIndex = 0;
+                currentMonthDay += 2;
+                firstDayOfMonthIndex = 0;
             }
 
-            for (int i = 0; i < MaximumWorkingDaysInMonth; i++)
+            for (int dayIndexInTable = 0; dayIndexInTable < TotalDaysInATable; dayIndexInTable++)
             {
-                if (i >= firstDayIndex)
+                if (dayIndexInTable >= firstDayOfMonthIndex)
                 {
-                    if (currentDay > endOfMonth.Day)
+                    if (currentMonthDay > endOfMonth.Day)
                     {
                         days.Add(DayViewModel.DayFromOtherMonth(zohoClient));
                     }
                     else
                     {
-                        days.Add(DayViewModel.DayFromThisMonth(currentDay, month, zohoClient));
+                        days.Add(DayViewModel.DayFromThisMonth(currentMonthDay, month, zohoClient));
 
-                        if (IsWeekEnded(i))
+                        if (IsWeekEnded(dayIndexInTable))
                         {
-                            currentDay += 3;
+                            currentMonthDay += 3;
                         }
                         else
                         {
-                            currentDay++;
+                            currentMonthDay++;
                         }
                     }
                 }
@@ -75,9 +75,9 @@ namespace ZohoPeopleTimeLogger.Services
             return days;
         }
 
-        private static bool IsWeekEnded(int i)
+        private static bool IsWeekEnded(int dayOfMonth)
         {
-            return (i + 1) % 5 == 0;
+            return (dayOfMonth + 1) % 5 == 0;
         }
 
         public async Task FillDaysWithTimeLogsAsync(List<IDayViewModel> days, DateTime month)

@@ -41,7 +41,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
 
             var days = target.GetDays(month);
 
-            for (int i = 0; i < DaysService.MaximumWorkingDaysInMonth; i++)
+            for (int i = 0; i < DaysService.TotalDaysInATable; i++)
             {
                 if (i >= firstDayOfMonthIndex && i <= lastDayOfMonthIndex)
                 {
