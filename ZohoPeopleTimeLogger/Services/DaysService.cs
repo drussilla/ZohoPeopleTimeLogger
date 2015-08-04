@@ -13,14 +13,16 @@ namespace ZohoPeopleTimeLogger.Services
     {
         private readonly IZohoClient zohoClient;
         private readonly IAuthenticationStorage auth;
+        private readonly IJobService jobService;
 
         public const string DayOffHolidayRemark = "Day off for all employees";
         public const int TotalDaysInATable = 25;
         
-        public DaysService(IZohoClient zohoClient, IAuthenticationStorage auth)
+        public DaysService(IZohoClient zohoClient, IAuthenticationStorage auth, IJobService jobService)
         {
             this.zohoClient = zohoClient;
             this.auth = auth;
+            this.jobService = jobService;
         }
 
         public List<IDayViewModel> GetDays(DateTime month)
@@ -123,28 +125,12 @@ namespace ZohoPeopleTimeLogger.Services
         public async Task FillMissingTimeLogsAsync(List<IDayViewModel> days)
         {
             var daysToFill = days.Where(x => x.IsActive && !x.IsFilled && !x.IsHoliday).ToList();
-            var jobId = await FindJobForThisMonth(daysToFill.First().Date.MiddleOfMonth());
+            var jobId = await jobService.GetJob(daysToFill.First().Date);
             
             foreach (var dayViewModel in daysToFill)
             {
                 await dayViewModel.FillHoursAsync(auth.GetAuthenticationData().UserName, jobId);
             }
-        }
-
-        private async Task<string> FindJobForThisMonth(DateTime date)
-        {
-            var allJobs = await zohoClient.TimeTracker.Jobs.GetAsync();
-            var jobFromThisMonth = allJobs.FirstOrDefault(
-                x =>
-                    x.FromDate <= date
-                    && x.ToDate >= date);
-
-            if (jobFromThisMonth == null)
-            {
-                throw new JobNotFoundException(date);
-            }
-
-            return jobFromThisMonth.JobId;
         }
     }
 }

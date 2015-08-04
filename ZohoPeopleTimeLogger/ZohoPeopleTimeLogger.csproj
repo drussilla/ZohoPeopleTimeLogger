@@ -111,6 +111,8 @@
     <Compile Include="Services\IDialogService.cs" />
     <Compile Include="Services\IDaysService.cs" />
     <Compile Include="Controllers\IProgressDialogController.cs" />
+    <Compile Include="Services\IJobService.cs" />
+    <Compile Include="Services\JobService.cs" />
     <Compile Include="ViewModel\DayViewModel.cs" />
     <Compile Include="ViewModel\IDayViewModel.cs" />
     <Compile Include="ViewModel\IMonthPickerViewModel.cs" />

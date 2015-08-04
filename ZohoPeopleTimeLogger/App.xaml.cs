@@ -26,6 +26,7 @@ namespace ZohoPeopleTimeLogger
             container.RegisterType<IDateTimeService, DateTimeService>();
             container.RegisterType<IDaysService, DaysService>();
             container.RegisterType<IMonthPickerViewModel, MonthPickerViewModel>();
+            container.RegisterType<IJobService, JobService>();
             
             ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
         }

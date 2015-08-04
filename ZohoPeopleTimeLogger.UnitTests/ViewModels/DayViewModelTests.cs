@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
@@ -62,6 +63,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             Assert.True(target.IsHoliday);
             Assert.Equal("test", target.HolidayName);
         }
+
 
         [Theory, AutoMoqData]
         public void Delete_DeleteAllJobsAndClearDay(

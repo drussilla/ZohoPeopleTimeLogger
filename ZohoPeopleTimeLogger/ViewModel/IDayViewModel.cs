@@ -12,11 +12,12 @@ namespace ZohoPeopleTimeLogger.ViewModel
         bool IsFilled { get; set; }
         int Day { get; set; }
         TimeSpan Hours { get; }
-        ICommand DeleteCommand { get; set; }
         DateTime Date { get; }
         string JobsDescription { get; }
         bool IsHoliday { get; }
         string HolidayName { get; }
+
+        ICommand DeleteCommand { get; }
 
         void FillLogs(List<TimeLog> logs);
 

@@ -88,6 +88,7 @@
     <Compile Include="AutoMoqDataAttribute.cs" />
     <Compile Include="Controllers\LoginControllerTest.cs" />
     <Compile Include="Services\DayServiceTests.cs" />
+    <Compile Include="Services\JobServiceTests.cs" />
     <Compile Include="ViewModels\DayViewModelTests.cs" />
     <Compile Include="ViewModels\MainWindowViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
