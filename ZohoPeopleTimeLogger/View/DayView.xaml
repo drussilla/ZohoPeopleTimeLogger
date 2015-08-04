@@ -124,5 +124,41 @@
                                HorizontalAlignment="Stretch"
                                />
         </Grid>
+        
+        <Button HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="5"
+                Width="100"
+                Height="100"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FillSingleDayCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource MetroCircleButtonStyle}">
+                    <Setter Property="Visibility"
+                    Value="Hidden"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IsMouseOver}" Value="True"/>
+                                <Condition Binding="{Binding IsBusy}" Value="False"/>
+                                <Condition Binding="{Binding IsActive}" Value="True"/>
+                                <Condition Binding="{Binding IsFilled}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+            <Rectangle Width="50"
+                           Height="50"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_add}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
     </Grid>
 </UserControl>

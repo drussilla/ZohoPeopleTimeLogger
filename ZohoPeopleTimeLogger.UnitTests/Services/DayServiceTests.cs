@@ -225,5 +225,34 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             dayFromOtherMonth2.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             filledDay2.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
+
+        [Theory, AutoMoqData]
+        public async void FillMissingTimeLogs_SingleDay(
+           [Frozen] Mock<IAuthenticationStorage> auth,
+           [Frozen] Mock<IJobService> job,
+           DaysService target)
+        {
+            var user = "user";
+
+            var startOfTheMonth = new DateTime(2015, 07, 01);
+
+            var notFilledDay1 = new Mock<IDayViewModel>();
+            notFilledDay1.Setup(x => x.IsActive).Returns(true);
+            notFilledDay1.Setup(x => x.IsFilled).Returns(false);
+            notFilledDay1.Setup(x => x.Date).Returns(startOfTheMonth);
+
+            var jobId = "1";
+
+            job.Setup(x => x.GetJob(It.IsAny<DateTime>())).ReturnsAsync(jobId);
+            auth.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData { UserName = user });
+
+            // Act
+            await target.FillMissingTimeLogsAsync(notFilledDay1.Object);
+
+            // Assert
+            job.Verify(x => x.GetJob(startOfTheMonth), Times.Once);
+
+            notFilledDay1.Verify(x => x.FillHoursAsync(user, jobId), Times.Once);
+        }
     }
 }

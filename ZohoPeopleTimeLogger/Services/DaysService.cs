@@ -132,5 +132,11 @@ namespace ZohoPeopleTimeLogger.Services
                 await dayViewModel.FillHoursAsync(auth.GetAuthenticationData().UserName, jobId);
             }
         }
+
+        public async Task FillMissingTimeLogsAsync(IDayViewModel day)
+        {
+            var jobId = await jobService.GetJob(day.Date);
+            await day.FillHoursAsync(auth.GetAuthenticationData().UserName, jobId);
+        }
     }
 }

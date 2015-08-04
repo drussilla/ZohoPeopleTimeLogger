@@ -10,5 +10,6 @@ namespace ZohoPeopleTimeLogger.Services
         List<IDayViewModel> GetDays(DateTime month);
         Task FillDaysWithTimeLogsAsync(List<IDayViewModel> days, DateTime month);
         Task FillMissingTimeLogsAsync(List<IDayViewModel> days);
+        Task FillMissingTimeLogsAsync(IDayViewModel day);
     }
 }

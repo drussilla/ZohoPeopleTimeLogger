@@ -13,8 +13,6 @@ namespace ZohoPeopleTimeLogger.ViewModel
 {
     public class MainWindowViewModel : ViewModel
     {
-        private readonly IZohoClient zohoClient;
-
         private readonly IDialogService dialogService;
 
         private readonly IDaysService daysService;
@@ -29,6 +27,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         public ICommand FillTimeCommand { get; private set; }
 
+        public ICommand FillSingleDayCommand { get; private set; }
+
         public bool IsLoggedIn { get; private set; }
 
         public string UserName { get; private set; }
@@ -42,21 +42,20 @@ namespace ZohoPeopleTimeLogger.ViewModel
             IDialogService dialogService,
             IDaysService daysService, 
             ILoginController loginController,
-            IMonthPickerViewModel monthPickerViewModel, 
-            IZohoClient zohoClient)
+            IMonthPickerViewModel monthPickerViewModel)
         {
             this.dialogService = dialogService;
             this.daysService = daysService;
             this.loginController = loginController;
             this.authenticationStorage = authenticationStorage;
-            this.zohoClient = zohoClient;
-
+            
             MonthPickerViewModel = monthPickerViewModel;
             MonthPickerViewModel.MonthChanged += MonthPickerViewModelOnMonthChanged;
 
             LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
             LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
             FillTimeCommand = new RelayCommand(FillTime);
+            FillSingleDayCommand = new RelayCommand<IDayViewModel>(FillSingleDay);
 
             Days = daysService.GetDays(MonthPickerViewModel.CurrentDate);
         }
@@ -76,7 +75,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
                 if (isTokenValid)
                 {
-                    LoadDays(MonthPickerViewModel.CurrentDate, authData);
+                    LoadDays(MonthPickerViewModel.CurrentDate);
                 }
                 else
                 {
@@ -92,7 +91,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             base.Cleanup();
         }
 
-        private async void LoadDays(DateTime month, AuthenticationData auth)
+        private async void LoadDays(DateTime month)
         {
             Days = daysService.GetDays(month);
 
@@ -120,7 +119,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 IsLoggedIn = true;
                 UserName = authenticationData.UserName;
 
-                LoadDays(MonthPickerViewModel.CurrentDate, authenticationData);
+                LoadDays(MonthPickerViewModel.CurrentDate);
             }
             else
             {
@@ -143,7 +142,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         private void MonthPickerViewModelOnMonthChanged(object sender, MonthChangedEventArgs monthChangedEventArgs)
         {
-            LoadDays(monthChangedEventArgs.NewMonth, authenticationStorage.GetAuthenticationData());
+            LoadDays(monthChangedEventArgs.NewMonth);
         }
 
         private void FillTime()
@@ -157,6 +156,11 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 dialogService.ShowMessageAsync("Relax! You already happy!",
                     "You have no empty days in this month. So don't worry, boss will be happy!");
             }
+        }
+
+        private void FillSingleDay(IDayViewModel dayViewModel)
+        {
+            daysService.FillMissingTimeLogsAsync(dayViewModel);
         }
 
         private bool AnyNotFilledDays()

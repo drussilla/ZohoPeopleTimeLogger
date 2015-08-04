@@ -31,7 +31,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             monthPicker.Setup(x => x.CurrentDate).Returns(date);
 
             var target = new MainWindowViewModel(auth.Object, dialog.Object, daysService.Object, login.Object,
-                monthPicker.Object, zoho.Object);
+                monthPicker.Object);
 
             Assert.Equal(DaysService.TotalDaysInATable, target.Days.Count);
             daysService.Verify(x => x.GetDays(date), Times.Once);
@@ -258,6 +258,17 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
 
             daysService.Verify(x => x.FillMissingTimeLogsAsync(days), Times.Never);
             dialog.Verify(x => x.ShowMessageAsync(It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [Theory, AutoMoqData]
+        public void FillSingleDayCommand_FillDayg(
+            [Frozen]Mock<IDaysService> daysService,
+            [Frozen]Mock<IDayViewModel> day,
+            MainWindowViewModel target)
+        {
+            target.FillSingleDayCommand.Execute(day.Object);
+
+            daysService.Verify(x => x.FillMissingTimeLogsAsync(day.Object), Times.Once);
         }
     }
 }
