@@ -59,7 +59,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         }
 
         [Theory, AutoMoqData]
-        public async void FillDays_FillWithCorrectValues(
+        public async void FillDays_TimeLogRecieved_FilledWithCorrectValues(
             [Frozen] Mock<IZohoClient> zoho,
             [Frozen] Mock<IAuthenticationStorage> auth,
             DaysService target)
@@ -81,6 +81,59 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
                 thirdLog
             };
 
+            var userName = "test";
+
+            auth.Setup(x => x.GetAuthenticationData())
+                .Returns(() => new AuthenticationData {UserName = userName, Token = "123"});
+            var days = target.GetDays(startOfTheMonth);
+
+            zoho.Setup(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"))
+                .ReturnsAsync(timeLogs);
+            
+            // Act
+            await target.FillDaysWithTimeLogsAsync(days, startOfTheMonth);
+
+            // Assert
+            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"));
+            zoho.Verify(x => x.Leave.GetHolidaysAsync(userName));
+            
+            var firstDayInCalendar = days.First(x => x.Day == startOfTheMonth.Day);
+            Assert.True(firstDayInCalendar.IsActive);
+            Assert.True(firstDayInCalendar.IsFilled);
+            Assert.Equal(TimeSpan.FromHours(8), firstDayInCalendar.Hours);
+            Assert.False(firstDayInCalendar.IsHoliday);
+            
+            var secondDayInCalendar = days.First(x => x.Day == middleOfTheMonth.Day);
+            Assert.True(secondDayInCalendar.IsActive);
+            Assert.True(secondDayInCalendar.IsFilled);
+            Assert.Equal(TimeSpan.FromHours(14), secondDayInCalendar.Hours);
+            Assert.False(secondDayInCalendar.IsHoliday);
+            
+            var secondMiddleDayInCalendar = days.First(x => x.Day == middleOfTheMonth.Day + 1);
+            Assert.False(secondMiddleDayInCalendar.IsHoliday);
+            
+            var thirdDayInMonth = days.First(x => x.Day == endOfTheMonth.Day);
+            Assert.True(thirdDayInMonth.IsActive);
+            Assert.True(thirdDayInMonth.IsFilled);
+            Assert.Equal(TimeSpan.FromHours(10), thirdDayInMonth.Hours);
+            Assert.False(thirdDayInMonth.IsHoliday);
+            Assert.Null(thirdDayInMonth.HolidayName);
+
+            var notFilledDay = days.First(x => x.Day == 2);
+            Assert.True(notFilledDay.IsActive);
+            Assert.False(notFilledDay.IsFilled);
+        }
+
+        [Theory, AutoMoqData]
+        public async void FillDays_HolidaysRecieved_FilledWithCorrectValues(
+            [Frozen] Mock<IZohoClient> zoho,
+            [Frozen] Mock<IAuthenticationStorage> auth,
+            DaysService target)
+        {
+            var startOfTheMonth = new DateTime(2015, 07, 01);
+            var middleOfTheMonth = new DateTime(2015, 07, 15);
+            var endOfTheMonth = startOfTheMonth.EndOfMonth();
+
             var singleDayyOffHoliday = new Holiday
             {
                 FromDate = startOfTheMonth,
@@ -98,11 +151,11 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             };
 
             var coupleDaysHoliday = new Holiday
-                {
-                    FromDate = middleOfTheMonth,
-                    ToDate = middleOfTheMonth.AddDays(1),
-                    Name = "twoDays",
-                    Remarks = DaysService.DayOffHolidayRemark
+            {
+                FromDate = middleOfTheMonth,
+                ToDate = middleOfTheMonth.AddDays(1),
+                Name = "twoDays",
+                Remarks = DaysService.DayOffHolidayRemark
             };
 
             var holidays = new List<Holiday>
@@ -115,11 +168,9 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             var userName = "test";
 
             auth.Setup(x => x.GetAuthenticationData())
-                .Returns(() => new AuthenticationData {UserName = userName, Token = "123"});
+                .Returns(() => new AuthenticationData { UserName = userName, Token = "123" });
             var days = target.GetDays(startOfTheMonth);
 
-            zoho.Setup(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"))
-                .ReturnsAsync(timeLogs);
             zoho.Setup(x => x.Leave.GetHolidaysAsync(userName)).ReturnsAsync(holidays);
 
             // Act
@@ -128,18 +179,12 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             // Assert
             zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"));
             zoho.Verify(x => x.Leave.GetHolidaysAsync(userName));
-            
+
             var firstDayInCalendar = days.First(x => x.Day == startOfTheMonth.Day);
-            Assert.True(firstDayInCalendar.IsActive);
-            Assert.True(firstDayInCalendar.IsFilled);
-            Assert.Equal(TimeSpan.FromHours(8), firstDayInCalendar.Hours);
             Assert.True(firstDayInCalendar.IsHoliday);
             Assert.Equal(singleDayyOffHoliday.Name, firstDayInCalendar.HolidayName);
 
             var secondDayInCalendar = days.First(x => x.Day == middleOfTheMonth.Day);
-            Assert.True(secondDayInCalendar.IsActive);
-            Assert.True(secondDayInCalendar.IsFilled);
-            Assert.Equal(TimeSpan.FromHours(14), secondDayInCalendar.Hours);
             Assert.True(secondDayInCalendar.IsHoliday);
             Assert.Equal(coupleDaysHoliday.Name, secondDayInCalendar.HolidayName);
 
@@ -148,15 +193,8 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             Assert.Equal(coupleDaysHoliday.Name, secondMiddleDayInCalendar.HolidayName);
 
             var thirdDayInMonth = days.First(x => x.Day == endOfTheMonth.Day);
-            Assert.True(thirdDayInMonth.IsActive);
-            Assert.True(thirdDayInMonth.IsFilled);
-            Assert.Equal(TimeSpan.FromHours(10), thirdDayInMonth.Hours);
             Assert.False(thirdDayInMonth.IsHoliday);
             Assert.Null(thirdDayInMonth.HolidayName);
-
-            var notFilledDay = days.First(x => x.Day == 2);
-            Assert.True(notFilledDay.IsActive);
-            Assert.False(notFilledDay.IsFilled);
         }
 
         [Theory, AutoMoqData]

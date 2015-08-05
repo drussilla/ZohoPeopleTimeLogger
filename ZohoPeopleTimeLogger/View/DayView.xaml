@@ -128,8 +128,8 @@
         <Button HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Margin="5"
-                Width="100"
-                Height="100"
+                Width="80"
+                Height="80"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FillSingleDayCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}">
             <Button.Style>
@@ -151,8 +151,8 @@
                     </Style.Triggers>
                 </Style>
             </Button.Style>
-            <Rectangle Width="50"
-                           Height="50"
+            <Rectangle Width="46"
+                           Height="46"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                 <Rectangle.OpacityMask>
                     <VisualBrush Stretch="Fill"

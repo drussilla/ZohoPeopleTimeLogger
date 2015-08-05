@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZohoPeopleClient;
-using ZohoPeopleTimeLogger.Exceptions;
 using ZohoPeopleTimeLogger.Extensions;
 using ZohoPeopleTimeLogger.ViewModel;
 
@@ -95,21 +94,28 @@ namespace ZohoPeopleTimeLogger.Services
                 month.BeginOfMonth(),
                 month.EndOfMonth());
 
+            if (timeLogs == null || !timeLogs.Any())
+            {
+                return;
+            }
+
             var groupedByDate = timeLogs.GroupBy(x => x.WorkDate);
 
             foreach (var itemsInLog in groupedByDate)
             {
                 var dayToFill = days.FirstOrDefault(x => x.Day == itemsInLog.Key.Day);
-                if (dayToFill != null)
-                {
-                    dayToFill.FillLogs(itemsInLog.ToList());
-                }
+                dayToFill?.FillLogs(itemsInLog.ToList());
             }
         }
 
         private async Task FillHolidays(List<IDayViewModel> days)
         {
             var holidays = await zohoClient.Leave.GetHolidaysAsync(auth.GetAuthenticationData().UserName);
+
+            if (holidays == null || !holidays.Any())
+            {
+                return;
+            }
 
             foreach (var day in days)
             {
