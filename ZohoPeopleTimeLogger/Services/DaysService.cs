@@ -15,6 +15,8 @@ namespace ZohoPeopleTimeLogger.Services
         private readonly IJobService jobService;
 
         public const string DayOffHolidayRemark = "Day off for all employees";
+        public const string VacationViewName = "P_ApplyLeaveView";
+        public const string VacationHolidayName = "Vacation";
         public const int TotalDaysInATable = 25;
         
         public DaysService(IZohoClient zohoClient, IAuthenticationStorage auth, IJobService jobService)
@@ -85,6 +87,7 @@ namespace ZohoPeopleTimeLogger.Services
         {
             await FillTimeLogs(days, month);
             await FillHolidays(days);
+            await FillVacations(days);
         }
 
         private async Task FillTimeLogs(List<IDayViewModel> days, DateTime month)
@@ -124,6 +127,24 @@ namespace ZohoPeopleTimeLogger.Services
                     holiday.Remarks.Equals(DayOffHolidayRemark, StringComparison.OrdinalIgnoreCase))
                 {
                     day.MarkAsHoliday(holiday.Name);
+                }
+            }
+        }
+
+        private async Task FillVacations(List<IDayViewModel> days)
+        {
+            var vacations = await zohoClient.FetchRecord.GetAsync(VacationViewName);
+
+            if (vacations == null || !vacations.Any())
+            {
+                return;
+            }
+
+            foreach (var day in days)
+            {
+                if (vacations.Any(x => DateTime.Parse((string)x["From"]) <= day.Date && DateTime.Parse((string)x["To"]) >= day.Date))
+                {
+                    day.MarkAsHoliday(VacationHolidayName);
                 }
             }
         }

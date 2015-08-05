@@ -177,7 +177,6 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             await target.FillDaysWithTimeLogsAsync(days, startOfTheMonth);
 
             // Assert
-            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"));
             zoho.Verify(x => x.Leave.GetHolidaysAsync(userName));
 
             var firstDayInCalendar = days.First(x => x.Day == startOfTheMonth.Day);
@@ -195,6 +194,63 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             var thirdDayInMonth = days.First(x => x.Day == endOfTheMonth.Day);
             Assert.False(thirdDayInMonth.IsHoliday);
             Assert.Null(thirdDayInMonth.HolidayName);
+        }
+
+        [Theory, AutoMoqData]
+        public async void FillDays_VacationsRecieved_FilledWithCorrectValues(
+            [Frozen] Mock<IZohoClient> zoho,
+            [Frozen] Mock<IAuthenticationStorage> auth,
+            DaysService target)
+        {
+            var startOfTheMonth = new DateTime(2015, 08, 03);
+            var middleOfTheMonth = startOfTheMonth.MiddleOfMonth();
+            var endOfTheMonth = startOfTheMonth.EndOfMonth();
+
+            dynamic vacation1 = new Dictionary<string, string>();
+            vacation1["From"] = middleOfTheMonth.AddDays(-1).ToString("dd-MMM-yyyy");
+            vacation1["To"] = middleOfTheMonth.AddDays(1).ToString("dd-MMM-yyyy");
+
+            dynamic vacation2 = new Dictionary<string, string>();
+            vacation2["From"] = middleOfTheMonth.AddDays(5).ToString("dd-MMM-yyyy");
+            vacation2["To"] = endOfTheMonth.ToString("dd-MMM-yyyy");
+
+            var vacations = new List<dynamic>
+            {
+                vacation1,
+                vacation2
+            };
+
+            var viewName = "P_ApplyLeaveView";
+            var holidayName = "Vacation";
+            var userName = "test";
+            
+            auth.Setup(x => x.GetAuthenticationData())
+                .Returns(() => new AuthenticationData { UserName = userName, Token = "123" });
+            var days = target.GetDays(startOfTheMonth);
+
+            zoho.Setup(x => x.FetchRecord.GetAsync(It.IsAny<string>())).ReturnsAsync(vacations);
+
+            // Act
+            await target.FillDaysWithTimeLogsAsync(days, startOfTheMonth);
+
+            // Assert
+            zoho.Verify(x => x.FetchRecord.GetAsync(viewName), Times.Once);
+
+            var firstDayInCalendar = days.First(x => x.Day == startOfTheMonth.Day);
+            Assert.False(firstDayInCalendar.IsHoliday);
+            Assert.Null(firstDayInCalendar.HolidayName);
+
+            var secondDayInCalendar = days.First(x => x.Day == middleOfTheMonth.Day + 1);
+            Assert.True(secondDayInCalendar.IsHoliday);
+            Assert.Equal(holidayName, secondDayInCalendar.HolidayName);
+
+            var secondMiddleDayInCalendar = days.First(x => x.Day == middleOfTheMonth.Day + 2);
+            Assert.False(secondMiddleDayInCalendar.IsHoliday);
+            Assert.Null(secondMiddleDayInCalendar.HolidayName);
+
+            var thirdDayInMonth = days.First(x => x.Day == endOfTheMonth.Day);
+            Assert.True(thirdDayInMonth.IsHoliday);
+            Assert.Equal(holidayName, thirdDayInMonth.HolidayName);
         }
 
         [Theory, AutoMoqData]
