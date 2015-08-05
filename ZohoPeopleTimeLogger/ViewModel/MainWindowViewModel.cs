@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
-using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Events;
-using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;
 
 namespace ZohoPeopleTimeLogger.ViewModel

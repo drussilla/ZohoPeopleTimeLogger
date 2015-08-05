@@ -8,7 +8,6 @@ using Xunit;
 using ZohoPeopleClient;
 using ZohoPeopleClient.Model.LeaveApi;
 using ZohoPeopleClient.Model.TimeTrackerApi;
-using ZohoPeopleTimeLogger.Exceptions;
 using ZohoPeopleTimeLogger.Extensions;
 using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;

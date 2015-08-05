@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;

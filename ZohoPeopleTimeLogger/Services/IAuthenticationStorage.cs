@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using ZohoPeopleTimeLogger.Model;
+﻿using ZohoPeopleTimeLogger.Model;
 
 namespace ZohoPeopleTimeLogger.Services
 {
