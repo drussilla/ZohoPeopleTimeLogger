@@ -249,6 +249,10 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
                         return day;
                     })
                     .ToList());
+
+            days[3].IsFilled = false;
+            days[3].MarkAsHoliday("holiday");
+
             days.Add(DayViewModel.DayFromOtherMonth(zoho.Object));
 
             target.Days = days;

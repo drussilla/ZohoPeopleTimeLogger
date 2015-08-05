@@ -163,7 +163,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
         private bool AnyNotFilledDays()
         {
-            return Days.Any(x => x.IsActive && !x.IsFilled);
+            return Days.Any(x => x.IsActive && !x.IsFilled & !x.IsHoliday);
         }
     }
 }
