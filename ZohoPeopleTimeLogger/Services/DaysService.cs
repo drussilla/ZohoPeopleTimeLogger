@@ -107,7 +107,10 @@ namespace ZohoPeopleTimeLogger.Services
             foreach (var itemsInLog in groupedByDate)
             {
                 var dayToFill = days.FirstOrDefault(x => x.Day == itemsInLog.Key.Day);
-                dayToFill?.FillLogs(itemsInLog.ToList());
+                if (dayToFill != null)
+                {
+                    dayToFill.FillLogs(itemsInLog.ToList());
+                }
             }
         }
 

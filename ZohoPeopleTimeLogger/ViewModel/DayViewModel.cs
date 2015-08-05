@@ -41,7 +41,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             }
         }
 
-        public ICommand DeleteCommand { get; }
+        public ICommand DeleteCommand { get; private set; }
 
         public DateTime Date { get; private set; }
 
