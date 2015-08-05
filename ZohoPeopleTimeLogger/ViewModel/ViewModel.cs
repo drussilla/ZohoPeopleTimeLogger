@@ -1,10 +1,11 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 
 namespace ZohoPeopleTimeLogger.ViewModel
 {
     public abstract class ViewModel : ViewModelBase
     {
-        public virtual void ViewReady()
+        public virtual async Task ViewReady()
         {
         }
     }

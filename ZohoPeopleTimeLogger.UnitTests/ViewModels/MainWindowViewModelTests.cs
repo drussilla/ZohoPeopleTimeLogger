@@ -38,7 +38,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public void ViewReady_NoLoginInformationStored_AskForLoginAndSaveValidDataAndLoadDays(
+        public async void ViewReady_NoLoginInformationStored_AskForLoginAndSaveValidDataAndLoadDays(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -58,7 +58,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             daysService.Setup(x => x.GetDays(startOfTheMonth))
                 .Returns(() => days);
             
-            target.ViewReady();
+            await target.ViewReady();
 
             Assert.True(target.IsLoggedIn);
             Assert.Equal(data.UserName, target.UserName);
@@ -74,7 +74,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public void ViewReady_LoginInformationStored_UserIsLoggedIn(
+        public async void ViewReady_LoginInformationStored_UserIsLoggedIn(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -102,8 +102,8 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             login
                 .Setup(x => x.LoginWithToken(data))
                 .ReturnsAsync(true);
-            
-            target.ViewReady();
+
+            await target.ViewReady();
 
             Assert.True(target.IsLoggedIn);
             Assert.Equal(data.UserName, target.UserName);
@@ -118,7 +118,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public void ViewReady_LoginInformationStoredAndTokenIsNotValid_ShowLoginWithPassword(
+        public async void ViewReady_LoginInformationStoredAndTokenIsNotValid_ShowLoginWithPassword(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -147,7 +147,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
                 .Setup(x => x.LoginWithToken(data))
                 .ReturnsAsync(false);
 
-            target.ViewReady();
+            await target.ViewReady();
 
             Assert.False(target.IsLoggedIn);
             
@@ -159,7 +159,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public void LogoutCommand_LoginInformationStored_UserIsLoggedOut(
+        public async void LogoutCommand_LoginInformationStored_UserIsLoggedOut(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -176,8 +176,8 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
                     day.IsFilled = true;
                     return day;
                 }).ToList());
-            
-            target.ViewReady();
+
+            await target.ViewReady();
             
             target.LogoutCommand.Execute(null);
 

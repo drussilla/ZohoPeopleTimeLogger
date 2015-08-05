@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using ZohoPeopleTimeLogger.Controllers;
@@ -58,7 +59,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             Days = daysService.GetDays(MonthPickerViewModel.CurrentDate);
         }
 
-        public override async void ViewReady()
+        public override async Task ViewReady()
         {
             var authData = authenticationStorage.GetAuthenticationData();
             if (authData == null)
