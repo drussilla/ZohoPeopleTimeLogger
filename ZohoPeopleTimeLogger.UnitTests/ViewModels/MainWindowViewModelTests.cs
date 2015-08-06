@@ -38,7 +38,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public async void ViewReady_NoLoginInformationStored_AskForLoginAndSaveValidDataAndLoadDays(
+        public void ViewReady_NoLoginInformationStored_AskForLoginAndSaveValidDataAndLoadDays(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -58,7 +58,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             daysService.Setup(x => x.GetDays(startOfTheMonth))
                 .Returns(() => days);
             
-            await target.ViewReady();
+            target.ViewReady().Wait();
 
             Assert.True(target.IsLoggedIn);
             Assert.Equal(data.UserName, target.UserName);
