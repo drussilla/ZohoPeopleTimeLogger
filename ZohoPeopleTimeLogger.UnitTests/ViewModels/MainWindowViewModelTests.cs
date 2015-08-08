@@ -74,7 +74,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public async void ViewReady_LoginInformationStored_UserIsLoggedIn(
+        public void ViewReady_LoginInformationStored_UserIsLoggedIn(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -103,7 +103,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
                 .Setup(x => x.LoginWithToken(data))
                 .ReturnsAsync(true);
 
-            await target.ViewReady();
+            target.ViewReady().Wait();
 
             Assert.True(target.IsLoggedIn);
             Assert.Equal(data.UserName, target.UserName);
@@ -118,7 +118,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public async void ViewReady_LoginInformationStoredAndTokenIsNotValid_ShowLoginWithPassword(
+        public void ViewReady_LoginInformationStoredAndTokenIsNotValid_ShowLoginWithPassword(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -147,7 +147,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
                 .Setup(x => x.LoginWithToken(data))
                 .ReturnsAsync(false);
 
-            await target.ViewReady();
+            target.ViewReady().Wait();
 
             Assert.False(target.IsLoggedIn);
             
@@ -159,7 +159,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
         }
 
         [Theory, AutoMoqData]
-        public async void LogoutCommand_LoginInformationStored_UserIsLoggedOut(
+        public void LogoutCommand_LoginInformationStored_UserIsLoggedOut(
             [Frozen]Mock<IAuthenticationStorage> auth,
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho,
@@ -177,7 +177,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
                     return day;
                 }).ToList());
 
-            await target.ViewReady();
+            target.ViewReady().Wait();
             
             target.LogoutCommand.Execute(null);
 

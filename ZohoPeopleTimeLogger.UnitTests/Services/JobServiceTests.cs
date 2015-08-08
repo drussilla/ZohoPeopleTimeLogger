@@ -14,7 +14,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
     public class JobServiceTests
     {
         [Theory, AutoMoqData]
-        public async void GetJob_JobsToDateAndFromDateTheSame_UseSecondJob(
+        public void GetJob_JobsToDateAndFromDateTheSame_UseSecondJob(
             [Frozen] Mock<IZohoClient> zohoClient,
             JobService target)
         {
@@ -29,7 +29,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             zohoClient.Setup(x => x.TimeTracker.Jobs.GetAsync()).ReturnsAsync(new List<Job> {job1, job2});
 
             // Act
-            var jobId = await target.GetJob(startOfTheMonth);
+            var jobId = target.GetJob(startOfTheMonth).Result;
 
             // Assert
             zohoClient.Verify(x => x.TimeTracker.Jobs.GetAsync(), Times.Once);
@@ -38,7 +38,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         }
 
         [Theory, AutoMoqData]
-        public async void GetJob_JobsIntersect_UseJobWithLaterToDate(
+        public void GetJob_JobsIntersect_UseJobWithLaterToDate(
             [Frozen] Mock<IZohoClient> zohoClient,
             JobService target)
         {
@@ -54,7 +54,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             zohoClient.Setup(x => x.TimeTracker.Jobs.GetAsync()).ReturnsAsync(new List<Job> { job1, job2 });
 
             // Act
-            var jobId = await target.GetJob(startSecond.AddDays(1));
+            var jobId = target.GetJob(startSecond.AddDays(1)).Result;
 
             // Assert
             zohoClient.Verify(x => x.TimeTracker.Jobs.GetAsync(), Times.Once);
@@ -63,7 +63,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         }
 
         [Theory, AutoMoqData]
-        public async void GetJob_JobsToDateAndFromDateDifferent_ReturnAllJobs(
+        public void GetJob_JobsToDateAndFromDateDifferent_ReturnAllJobs(
             [Frozen] Mock<IZohoClient> zohoClient,
             JobService target)
         {
@@ -80,11 +80,11 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             zohoClient.Setup(x => x.TimeTracker.Jobs.GetAsync()).ReturnsAsync(new List<Job> { job1, job2 });
 
             // Act
-            var firstJobId1 = await target.GetJob(startFirst);
-            var firstJobId2 = await target.GetJob(endFirst);
+            var firstJobId1 = target.GetJob(startFirst).Result;
+            var firstJobId2 = target.GetJob(endFirst).Result;
 
-            var secondJobId1 = await target.GetJob(startSecond);
-            var secondJobId2 = await target.GetJob(endSecond);
+            var secondJobId1 = target.GetJob(startSecond).Result;
+            var secondJobId2 = target.GetJob(endSecond).Result;
 
             // Assert
             zohoClient.Verify(x => x.TimeTracker.Jobs.GetAsync(), Times.Exactly(4));
@@ -97,7 +97,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         }
 
         [Theory, AutoMoqData]
-        public async void GetJob_JobNotFound_ThrowException(
+        public void GetJob_JobNotFound_ThrowException(
             [Frozen] Mock<IZohoClient> zoho,
             JobService target)
         {
@@ -112,7 +112,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
                 }
             });
 
-            var ex = await Assert.ThrowsAsync<JobNotFoundException>(async () => await target.GetJob(date));
+            var ex = Assert.ThrowsAsync<JobNotFoundException>(async () => await target.GetJob(date)).Result;
             Assert.Equal(date, ex.Month);
         }
     }
