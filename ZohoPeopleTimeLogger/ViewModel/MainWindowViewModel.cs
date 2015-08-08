@@ -51,7 +51,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             MonthPickerViewModel = monthPickerViewModel;
             MonthPickerViewModel.MonthChanged += MonthPickerViewModelOnMonthChanged;
 
-            LoginCommand = new RelayCommand(Login, () => !IsLoggedIn);
+            LoginCommand = new RelayCommand(async () => await Login(), () => !IsLoggedIn);
             LogoutCommand = new RelayCommand(Logout, () => IsLoggedIn);
             FillTimeCommand = new RelayCommand(FillTime);
             FillSingleDayCommand = new RelayCommand<IDayViewModel>(FillSingleDay);
@@ -64,7 +64,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             var authData = authenticationStorage.GetAuthenticationData();
             if (authData == null)
             {
-                Login();
+                await Login();
             }
             else
             {
@@ -79,7 +79,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 else
                 {
                     Logout();
-                    Login();
+                    await Login();
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace ZohoPeopleTimeLogger.ViewModel
             }
         }
 
-        private async void Login()
+        private async Task Login()
         {
             var authenticationData = await loginController.LoginWithPassword();
 
