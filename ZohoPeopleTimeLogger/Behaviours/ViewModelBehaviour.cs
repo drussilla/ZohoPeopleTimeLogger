@@ -26,14 +26,14 @@ namespace ZohoPeopleTimeLogger.Behaviours
             AssociatedObject.Loaded -= AssociatedObjectOnLoaded;
         }
 
-        private void AssociatedObjectOnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        private async void AssociatedObjectOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             AssociatedObject.DataContext = ServiceLocator.Current.GetInstance(ViewModelType);
 
             var viewModel = AssociatedObject.DataContext as ViewModel.ViewModel;
             if (viewModel != null)
             {
-                viewModel.ViewReady();
+                await viewModel.ViewReady();
             }
         }
     }
