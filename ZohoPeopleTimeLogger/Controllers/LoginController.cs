@@ -106,7 +106,7 @@ namespace ZohoPeopleTimeLogger.Controllers
             return isSuccess;
         }
 
-        private async Task<string> GetEmployeeId(string username)
+        public async Task<string> GetEmployeeId(string username)
         {
             var employees = await zohoClient.FetchRecord.GetAsync("P_EmployeeView");
 

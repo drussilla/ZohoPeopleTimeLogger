@@ -106,7 +106,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
         }
 
         [Theory, AutoMoqData]
-        public async void LoginWithToken_TokenIsNotValid_ReturnTrue(
+        public async void LoginWithToken_TokenIsNotValid_ReturnFalse(
             [Frozen]Mock<IZohoClient> zoho,
             [Frozen]Mock<IDateTimeService> dateTime,
             [Frozen]Mock<IDialogService> dialog,

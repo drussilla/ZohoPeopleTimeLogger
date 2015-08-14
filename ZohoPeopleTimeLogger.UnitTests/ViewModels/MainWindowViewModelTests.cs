@@ -113,8 +113,62 @@ namespace ZohoPeopleTimeLogger.UnitTests.ViewModels
             
             login.Verify(x => x.LoginWithPassword(), Times.Never);
             login.Verify(x => x.LoginWithToken(data), Times.Once);
+            login.Verify(x => x.GetEmployeeId(It.IsAny<string>()), Times.Never);
             daysService.Verify(x => x.GetDays(startOfTheMonth), Times.Once);
             daysService.Verify(x => x.FillDaysWithTimeLogsAsync(days, startOfTheMonth), Times.Once);
+        }
+
+        [Theory, AutoMoqData]
+        public void ViewReady_LoginInformationStored_NoId_IdRestored(
+            [Frozen]Mock<IAuthenticationStorage> auth,
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho,
+            [Frozen]Mock<ILoginController> login,
+            [Frozen]Mock<IDaysService> daysService,
+            [Frozen]Mock<IMonthPickerViewModel> monthPicker,
+            [Frozen]Mock<IProgressDialogController> progressController,
+            [Frozen]AuthenticationData data,
+            MainWindowViewModel target)
+        {
+            data.Id = null;
+            string id = "42";
+
+            var startOfTheMonth = new DateTime(2015, 07, 01);
+            var days =
+                Enumerable.Range(0, 25)
+                .Select(x => DayViewModel.DayFromOtherMonth(zoho.Object))
+                .ToList();
+
+            dialog
+                .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(progressController.Object);
+
+            auth
+                .Setup(x => x.GetAuthenticationData())
+                .Returns(data);
+            monthPicker
+                .Setup(x => x.CurrentDate)
+                .Returns(startOfTheMonth);
+            daysService
+                .Setup(x => x.GetDays(startOfTheMonth))
+                .Returns(() => days);
+            login
+                .Setup(x => x.LoginWithToken(data))
+                .ReturnsAsync(true);
+
+            login
+                .Setup(x => x.GetEmployeeId(It.IsAny<string>()))
+                .ReturnsAsync(id);
+
+            target.ViewReady().Wait();
+
+            Assert.Equal(id, data.Id);
+
+            dialog.Verify(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()));
+            progressController.Verify(x => x.SetIndeterminate());
+            progressController.Verify(x => x.CloseAsync());
+            login.Verify(x => x.GetEmployeeId(data.UserName), Times.Once);
+            auth.Verify(x => x.SaveAuthenticationData(data));
         }
 
         [Theory, AutoMoqData]

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Events;
+using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;
 
 namespace ZohoPeopleTimeLogger.ViewModel
@@ -74,6 +75,10 @@ namespace ZohoPeopleTimeLogger.ViewModel
 
                 if (isTokenValid)
                 {
+                    if (string.IsNullOrEmpty(authData.Id))
+                    {
+                        await GetAndSaveUserId(authData);
+                    }
                     LoadDays(MonthPickerViewModel.CurrentDate);
                 }
                 else
@@ -165,6 +170,16 @@ namespace ZohoPeopleTimeLogger.ViewModel
         private bool AnyNotFilledDays()
         {
             return Days.Any(x => x.IsActive && !x.IsFilled & !x.IsHoliday);
+        }
+
+        private async Task GetAndSaveUserId(AuthenticationData authData)
+        {
+            var progress = await dialogService.ShowProgress("Loading data from server", "Please wait");
+            progress.SetIndeterminate();
+            var id = await loginController.GetEmployeeId(authData.UserName);
+            authData.Id = id;
+            authenticationStorage.SaveAuthenticationData(authData);
+            await progress.CloseAsync();
         }
     }
 }

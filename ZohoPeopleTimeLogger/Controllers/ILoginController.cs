@@ -8,5 +8,7 @@ namespace ZohoPeopleTimeLogger.Controllers
         Task<AuthenticationData> LoginWithPassword();
 
         Task<bool> LoginWithToken(AuthenticationData authData);
+
+        Task<string> GetEmployeeId(string username);
     }
 }
