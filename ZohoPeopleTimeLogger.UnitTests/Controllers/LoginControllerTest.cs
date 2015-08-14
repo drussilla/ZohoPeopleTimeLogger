@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using MahApps.Metro.Controls.Dialogs;
 using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
@@ -25,6 +26,52 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             var result = target.LoginWithPassword();
 
             Assert.Null(result.Result);
+        }
+
+        [Theory, AutoMoqData]
+        public void LoginWithPassword_VAlidPasswordPassed_AuthDataReturned(
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho, 
+            [Frozen]Mock<IProgressDialogController> progressDialog,
+            LoginController target)
+        {
+            var userName = "test";
+            var password = "pass";
+            var token = "token";
+            var id = "42";
+
+            dialog
+                .Setup(x => x.ShowLogin())
+                .ReturnsAsync(new LoginDialogData { Username = userName, Password = password});
+            dialog
+                .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(progressDialog.Object);
+            zoho
+                .Setup(x => x.LoginAsync(userName, password))
+                .ReturnsAsync(token);
+
+            dynamic employee1 = new Dictionary<string, string>();
+            employee1["Email ID"] = userName;
+            employee1["EmployeeID"] = id;
+
+            dynamic employee2 = new Dictionary<string, string>();
+            employee2["Email ID"] = "random";
+            employee2["EmployeeID"] = "11";
+            zoho
+                .Setup(x => x.FetchRecord.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync(new List<dynamic> {employee1, employee2});
+
+            var result = target.LoginWithPassword().Result;
+
+            progressDialog.Verify(x => x.SetIndeterminate());
+            zoho.Verify(x => x.LoginAsync(userName, password));
+            progressDialog.Verify(x => x.CloseAsync());
+            zoho.Verify(x => x.FetchRecord.GetAsync("P_EmployeeView"));
+
+            Assert.NotNull(result);
+            Assert.Equal(userName, result.UserName);
+            Assert.Equal(token, result.Token);
+            Assert.Equal(id, result.Id);
         }
 
         [Theory, AutoMoqData]

@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ZohoPeopleClient;
 using ZohoPeopleClient.Exceptions;
@@ -46,6 +48,18 @@ namespace ZohoPeopleTimeLogger.Controllers
                 errorMessage = exception.Response;
             }
 
+            var id = string.Empty;
+            try
+            {
+                id = await GetEmployeeId(loginDetails.Username);
+            }
+            catch (Exception exception)
+            {
+                isError = true;
+                errorMessage = exception.Message;
+            }
+            
+            
             await progress.CloseAsync();
 
             if (isError)
@@ -54,7 +68,7 @@ namespace ZohoPeopleTimeLogger.Controllers
                 return null;
             }
 
-            return new AuthenticationData {UserName = loginDetails.Username, Token = token};
+            return new AuthenticationData {UserName = loginDetails.Username, Token = token, Id = id};
         }
 
         public async Task<bool> LoginWithToken(AuthenticationData authData)
@@ -90,6 +104,21 @@ namespace ZohoPeopleTimeLogger.Controllers
             await progress.CloseAsync();
 
             return isSuccess;
+        }
+
+        private async Task<string> GetEmployeeId(string username)
+        {
+            var employees = await zohoClient.FetchRecord.GetAsync("P_EmployeeView");
+
+            var employeeRecord =
+                employees.FirstOrDefault(
+                    x => ((string) x["Email ID"]).Equals(username, StringComparison.OrdinalIgnoreCase));
+            if (employeeRecord == null)
+            {
+                throw new Exception("Cannot find user Id. User name: " + username);
+            }
+
+            return employeeRecord["EmployeeID"];
         }
     }
 }
