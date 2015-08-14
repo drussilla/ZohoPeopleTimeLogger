@@ -61,6 +61,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         public async void FillDays_TimeLogRecieved_FilledWithCorrectValues(
             [Frozen] Mock<IZohoClient> zoho,
             [Frozen] Mock<IAuthenticationStorage> auth,
+            AuthenticationData authData,
             DaysService target)
         {
             var startOfTheMonth = new DateTime(2015, 07, 01);
@@ -80,21 +81,19 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
                 thirdLog
             };
 
-            var userName = "test";
-
             auth.Setup(x => x.GetAuthenticationData())
-                .Returns(() => new AuthenticationData {UserName = userName, Token = "123"});
+                .Returns(authData);
             var days = target.GetDays(startOfTheMonth);
 
-            zoho.Setup(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"))
+            zoho.Setup(x => x.TimeTracker.TimeLog.GetAsync(authData.Id, startOfTheMonth, endOfTheMonth, "all", "all"))
                 .ReturnsAsync(timeLogs);
             
             // Act
             await target.FillDaysWithTimeLogsAsync(days, startOfTheMonth);
 
             // Assert
-            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(userName, startOfTheMonth, endOfTheMonth, "all", "all"));
-            zoho.Verify(x => x.Leave.GetHolidaysAsync(userName));
+            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(authData.Id, startOfTheMonth, endOfTheMonth, "all", "all"));
+            zoho.Verify(x => x.Leave.GetHolidaysAsync(authData.Id));
             
             var firstDayInCalendar = days.First(x => x.Day == startOfTheMonth.Day);
             Assert.True(firstDayInCalendar.IsActive);
@@ -127,6 +126,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         public async void FillDays_HolidaysRecieved_FilledWithCorrectValues(
             [Frozen] Mock<IZohoClient> zoho,
             [Frozen] Mock<IAuthenticationStorage> auth,
+            AuthenticationData authData,
             DaysService target)
         {
             var startOfTheMonth = new DateTime(2015, 07, 01);
@@ -164,19 +164,18 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
                 coupleDaysHoliday
             };
 
-            var userName = "test";
-
+            
             auth.Setup(x => x.GetAuthenticationData())
-                .Returns(() => new AuthenticationData { UserName = userName, Token = "123" });
+                .Returns(authData);
             var days = target.GetDays(startOfTheMonth);
 
-            zoho.Setup(x => x.Leave.GetHolidaysAsync(userName)).ReturnsAsync(holidays);
+            zoho.Setup(x => x.Leave.GetHolidaysAsync(It.IsAny<string>())).ReturnsAsync(holidays);
 
             // Act
             await target.FillDaysWithTimeLogsAsync(days, startOfTheMonth);
 
             // Assert
-            zoho.Verify(x => x.Leave.GetHolidaysAsync(userName));
+            zoho.Verify(x => x.Leave.GetHolidaysAsync(authData.Id));
 
             var firstDayInCalendar = days.First(x => x.Day == startOfTheMonth.Day);
             Assert.True(firstDayInCalendar.IsHoliday);
@@ -199,6 +198,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         public async void FillDays_VacationsRecieved_FilledWithCorrectValues(
             [Frozen] Mock<IZohoClient> zoho,
             [Frozen] Mock<IAuthenticationStorage> auth,
+            AuthenticationData authData,
             DaysService target)
         {
             var startOfTheMonth = new DateTime(2015, 08, 03);
@@ -221,10 +221,9 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
 
             var viewName = "P_ApplyLeaveView";
             var holidayName = "Vacation";
-            var userName = "test";
             
             auth.Setup(x => x.GetAuthenticationData())
-                .Returns(() => new AuthenticationData { UserName = userName, Token = "123" });
+                .Returns(authData);
             var days = target.GetDays(startOfTheMonth);
 
             zoho.Setup(x => x.FetchRecord.GetAsync(It.IsAny<string>())).ReturnsAsync(vacations);
@@ -256,10 +255,9 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         public async void FillMissingTimeLogs_AllNotFilledAndActiveDayFilledWithDeafultJob(
             [Frozen] Mock<IAuthenticationStorage> auth,
             [Frozen] Mock<IJobService> job,
+            AuthenticationData authData,
             DaysService target)
         {
-            var user = "user";
-
             var startOfTheMonth = new DateTime(2015, 07, 01);
             
             var days = new List<IDayViewModel>();
@@ -302,7 +300,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             var jobId = "1";
 
             job.Setup(x => x.GetJob(It.IsAny<DateTime>())).ReturnsAsync(jobId);
-            auth.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData {UserName = user});
+            auth.Setup(x => x.GetAuthenticationData()).Returns(authData);
             
             // Act
             await target.FillMissingTimeLogsAsync(days);
@@ -312,8 +310,8 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
 
             dayFromOtherMonth1.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             filledDay1.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-            notFilledDay1.Verify(x => x.FillHoursAsync(user, jobId), Times.Once);
-            notFilledDay2.Verify(x => x.FillHoursAsync(user, jobId), Times.Once);
+            notFilledDay1.Verify(x => x.FillHoursAsync(authData.Id, jobId), Times.Once);
+            notFilledDay2.Verify(x => x.FillHoursAsync(authData.Id, jobId), Times.Once);
             notFilledHolidayDay.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             dayFromOtherMonth2.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             filledDay2.Verify(x => x.FillHoursAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -323,10 +321,9 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
         public async void FillMissingTimeLogs_SingleDay(
            [Frozen] Mock<IAuthenticationStorage> auth,
            [Frozen] Mock<IJobService> job,
+           AuthenticationData authData,
            DaysService target)
         {
-            var user = "user";
-
             var startOfTheMonth = new DateTime(2015, 07, 01);
 
             var notFilledDay1 = new Mock<IDayViewModel>();
@@ -337,7 +334,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             var jobId = "1";
 
             job.Setup(x => x.GetJob(It.IsAny<DateTime>())).ReturnsAsync(jobId);
-            auth.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData { UserName = user });
+            auth.Setup(x => x.GetAuthenticationData()).Returns(authData);
 
             // Act
             await target.FillMissingTimeLogsAsync(notFilledDay1.Object);
@@ -345,7 +342,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Services
             // Assert
             job.Verify(x => x.GetJob(startOfTheMonth), Times.Once);
 
-            notFilledDay1.Verify(x => x.FillHoursAsync(user, jobId), Times.Once);
+            notFilledDay1.Verify(x => x.FillHoursAsync(authData.Id, jobId), Times.Once);
         }
     }
 }

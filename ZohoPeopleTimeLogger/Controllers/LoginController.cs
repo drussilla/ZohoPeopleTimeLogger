@@ -82,7 +82,7 @@ namespace ZohoPeopleTimeLogger.Controllers
             try
             {
                 await
-                    zohoClient.TimeTracker.TimeLog.GetAsync(authData.UserName, dateTimeService.Now, dateTimeService.Now);
+                    zohoClient.TimeTracker.TimeLog.GetAsync(authData.Id, dateTimeService.Now, dateTimeService.Now);
             }
             catch (WebException ex)
             {

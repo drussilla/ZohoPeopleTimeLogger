@@ -93,7 +93,7 @@ namespace ZohoPeopleTimeLogger.Services
         private async Task FillTimeLogs(List<IDayViewModel> days, DateTime month)
         {
             var timeLogs = await zohoClient.TimeTracker.TimeLog.GetAsync(
-                auth.GetAuthenticationData().UserName,
+                auth.GetAuthenticationData().Id,
                 month.BeginOfMonth(),
                 month.EndOfMonth());
 
@@ -116,7 +116,7 @@ namespace ZohoPeopleTimeLogger.Services
 
         private async Task FillHolidays(List<IDayViewModel> days)
         {
-            var holidays = await zohoClient.Leave.GetHolidaysAsync(auth.GetAuthenticationData().UserName);
+            var holidays = await zohoClient.Leave.GetHolidaysAsync(auth.GetAuthenticationData().Id);
 
             if (holidays == null || !holidays.Any())
             {
@@ -159,14 +159,14 @@ namespace ZohoPeopleTimeLogger.Services
             
             foreach (var dayViewModel in daysToFill)
             {
-                await dayViewModel.FillHoursAsync(auth.GetAuthenticationData().UserName, jobId);
+                await dayViewModel.FillHoursAsync(auth.GetAuthenticationData().Id, jobId);
             }
         }
 
         public async Task FillMissingTimeLogsAsync(IDayViewModel day)
         {
             var jobId = await jobService.GetJob(day.Date);
-            await day.FillHoursAsync(auth.GetAuthenticationData().UserName, jobId);
+            await day.FillHoursAsync(auth.GetAuthenticationData().Id, jobId);
         }
     }
 }

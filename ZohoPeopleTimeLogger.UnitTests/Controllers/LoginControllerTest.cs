@@ -93,14 +93,14 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
                 .ReturnsAsync(progressDialog.Object);
 
             zoho
-                .Setup(x => x.TimeTracker.TimeLog.GetAsync(authData.UserName, date, date, "all", "all"))
+                .Setup(x => x.TimeTracker.TimeLog.GetAsync(authData.Id, date, date, "all", "all"))
                 .ReturnsAsync(new List<TimeLog>());
 
             var result = await target.LoginWithToken(authData);
             
             Assert.True(result);
             zoho.Verify(x => x.Login(authData.Token), Times.Once);
-            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(authData.UserName, date, date, "all", "all"));
+            zoho.Verify(x => x.TimeTracker.TimeLog.GetAsync(authData.Id, date, date, "all", "all"));
             dialog.Verify(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             progressDialog.Verify(x => x.CloseAsync(), Times.Once);
         }
