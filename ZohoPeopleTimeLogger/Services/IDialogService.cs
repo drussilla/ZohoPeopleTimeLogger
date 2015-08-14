@@ -6,7 +6,7 @@ namespace ZohoPeopleTimeLogger.Services
 {
     public interface IDialogService
     {
-        Task<LoginDialogData> ShowLogin();
+        Task<LoginDialogData> ShowLogin(string defaultLogin);
 
         Task<IProgressDialogController> ShowProgress(string title, string message);
         Task<MessageDialogResult> ShowMessageAsync(string title, string errorMessage);

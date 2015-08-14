@@ -6,6 +6,7 @@ using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
 using ZohoPeopleClient;
+using ZohoPeopleClient.Exceptions;
 using ZohoPeopleClient.Model.TimeTrackerApi;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Model;
@@ -21,7 +22,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             Mock<IZohoClient> zoho,
             LoginController target)
         {
-            dialog.Setup(x => x.ShowLogin()).ReturnsAsync(null);
+            dialog.Setup(x => x.ShowLogin(It.IsAny<string>())).ReturnsAsync(null);
 
             var result = target.LoginWithPassword();
 
@@ -29,7 +30,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
         }
 
         [Theory, AutoMoqData]
-        public void LoginWithPassword_VAlidPasswordPassed_AuthDataReturned(
+        public void LoginWithPassword_ValidPasswordPassed_AuthDataReturned(
             [Frozen]Mock<IDialogService> dialog,
             [Frozen]Mock<IZohoClient> zoho, 
             [Frozen]Mock<IProgressDialogController> progressDialog,
@@ -41,7 +42,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             var id = "42";
 
             dialog
-                .Setup(x => x.ShowLogin())
+                .Setup(x => x.ShowLogin(It.IsAny<string>()))
                 .ReturnsAsync(new LoginDialogData { Username = userName, Password = password});
             dialog
                 .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
@@ -72,6 +73,71 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             Assert.Equal(userName, result.UserName);
             Assert.Equal(token, result.Token);
             Assert.Equal(id, result.Id);
+        }
+
+        [Theory, AutoMoqData]
+        public void LoginWithPassword_WrongPasswordAndSecondTimeTry_SameLoginRamains(
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho,
+            [Frozen]Mock<IProgressDialogController> progressDialog,
+            LoginController target)
+        {
+            var userName = "test";
+            var password = "pass";
+            
+            dialog
+                .Setup(x => x.ShowLogin(null))
+                .ReturnsAsync(new LoginDialogData { Username = userName, Password = password });
+            dialog
+                .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(progressDialog.Object);
+            zoho
+                .Setup(x => x.LoginAsync(userName, password))
+                .ThrowsAsync(new ApiLoginErrorException(""));
+
+            target.LoginWithPassword().Wait();
+            target.LoginWithPassword().Wait();
+
+            dialog.Verify(x => x.ShowLogin(null), Times.Once);
+            dialog.Verify(x => x.ShowLogin(userName), Times.Once);
+
+            progressDialog.Verify(x => x.CloseAsync());
+        }
+
+        [Theory, AutoMoqData]
+        public void LoginWithPassword_WrongPasswordAndSecondTimeTryPressedCancel_LoginIsEmpty(
+            [Frozen]Mock<IDialogService> dialog,
+            [Frozen]Mock<IZohoClient> zoho,
+            [Frozen]Mock<IProgressDialogController> progressDialog,
+            LoginController target)
+        {
+            var userName = "test";
+            var password = "pass";
+
+            dialog
+                .Setup(x => x.ShowLogin(null))
+                .ReturnsAsync(new LoginDialogData { Username = userName, Password = password });
+            dialog
+                .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(progressDialog.Object);
+            zoho
+                .Setup(x => x.LoginAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new ApiLoginErrorException(""));
+
+            target.LoginWithPassword().Wait();
+
+            dialog.Verify(x => x.ShowLogin(null), Times.Once);
+
+            zoho
+                .Setup(x => x.LoginAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(null);
+            target.LoginWithPassword().Wait();
+            dialog.Verify(x => x.ShowLogin(userName), Times.Once);
+
+            target.LoginWithPassword().Wait();
+            dialog.Verify(x => x.ShowLogin(null), Times.Exactly(2));
+            
+            progressDialog.Verify(x => x.CloseAsync());
         }
 
         [Theory, AutoMoqData]

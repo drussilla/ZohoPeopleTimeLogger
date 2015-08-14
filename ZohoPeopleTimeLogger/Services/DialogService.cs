@@ -15,13 +15,14 @@ namespace ZohoPeopleTimeLogger.Services
             currentWindow = Application.Current.MainWindow as MetroWindow;
         }
 
-        public Task<LoginDialogData> ShowLogin()
+        public Task<LoginDialogData> ShowLogin(string defaultLogin)
         {
             return currentWindow.ShowLoginAsync("Authentication", "Enter your credentials",
                             new LoginDialogSettings
                             {
                                 AnimateHide = false,
                                 AnimateShow = true,
+                                InitialUsername = defaultLogin,
                                 UsernameWatermark = "Email...",
                                 NegativeButtonVisibility = Visibility.Visible
                             });

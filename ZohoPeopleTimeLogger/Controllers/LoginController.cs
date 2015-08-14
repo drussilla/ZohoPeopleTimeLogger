@@ -15,6 +15,8 @@ namespace ZohoPeopleTimeLogger.Controllers
         private readonly IDateTimeService dateTimeService;
         private readonly IZohoClient zohoClient;
 
+        private string previouslyTypedLogin;
+
         public LoginController(IZohoClient zohoClient, IDialogService dialogService, IDateTimeService dateTimeService)
         {
             this.zohoClient = zohoClient;
@@ -24,13 +26,16 @@ namespace ZohoPeopleTimeLogger.Controllers
 
         public async Task<AuthenticationData> LoginWithPassword()
         {
-            var loginDetails = await dialogService.ShowLogin();
+            var loginDetails = await dialogService.ShowLogin(previouslyTypedLogin);
 
             // cancel was pressed
             if (loginDetails == null)
             {
+                previouslyTypedLogin = null;
                 return null;
             }
+
+            previouslyTypedLogin = loginDetails.Username;
 
             var progress = await dialogService.ShowProgress("Authentication", "Wait for response from server");
             progress.SetIndeterminate();
@@ -49,17 +54,19 @@ namespace ZohoPeopleTimeLogger.Controllers
             }
 
             var id = string.Empty;
-            try
+            if (!isError)
             {
-                id = await GetEmployeeId(loginDetails.Username);
+                try
+                {
+                    id = await GetEmployeeId(loginDetails.Username);
+                }
+                catch (Exception exception)
+                {
+                    isError = true;
+                    errorMessage = exception.Message;
+                }
             }
-            catch (Exception exception)
-            {
-                isError = true;
-                errorMessage = exception.Message;
-            }
-            
-            
+
             await progress.CloseAsync();
 
             if (isError)
