@@ -97,6 +97,7 @@
     <Compile Include="Exceptions\JobNotFoundException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Model\AuthenticationData.cs" />
+    <Compile Include="Model\LoginData.cs" />
     <Compile Include="Services\AuthenticationStorage.cs" />
     <Compile Include="Services\DateTimeService.cs" />
     <Compile Include="Services\DaysService.cs" />

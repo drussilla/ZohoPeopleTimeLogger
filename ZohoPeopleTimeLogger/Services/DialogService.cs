@@ -3,6 +3,7 @@ using System.Windows;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using ZohoPeopleTimeLogger.Controllers;
+using ZohoPeopleTimeLogger.Model;
 
 namespace ZohoPeopleTimeLogger.Services
 {
@@ -15,9 +16,9 @@ namespace ZohoPeopleTimeLogger.Services
             currentWindow = Application.Current.MainWindow as MetroWindow;
         }
 
-        public Task<LoginDialogData> ShowLogin(string defaultLogin)
+        public async Task<LoginData> ShowLogin(string defaultLogin)
         {
-            return currentWindow.ShowLoginAsync("Authentication", "Enter your credentials",
+            var data = await currentWindow.ShowLoginAsync("Authentication", "Enter your credentials",
                             new LoginDialogSettings
                             {
                                 AnimateHide = false,
@@ -26,6 +27,12 @@ namespace ZohoPeopleTimeLogger.Services
                                 UsernameWatermark = "Email...",
                                 NegativeButtonVisibility = Visibility.Visible
                             });
+            if (data == null)
+            {
+                return null;
+            }
+
+            return new LoginData {Username = data.Username, Password = data.Password};
         }
 
         public async Task<IProgressDialogController> ShowProgress(string title, string message)

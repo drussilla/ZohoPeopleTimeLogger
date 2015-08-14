@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using MahApps.Metro.Controls.Dialogs;
 using Moq;
 using Ploeh.AutoFixture.Xunit2;
 using Xunit;
@@ -43,7 +42,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
 
             dialog
                 .Setup(x => x.ShowLogin(It.IsAny<string>()))
-                .ReturnsAsync(new LoginDialogData { Username = userName, Password = password});
+                .ReturnsAsync(new LoginData { Username = userName, Password = password});
             dialog
                 .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(progressDialog.Object);
@@ -87,7 +86,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             
             dialog
                 .Setup(x => x.ShowLogin(null))
-                .ReturnsAsync(new LoginDialogData { Username = userName, Password = password });
+                .ReturnsAsync(new LoginData { Username = userName, Password = password });
             dialog
                 .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(progressDialog.Object);
@@ -116,7 +115,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
 
             dialog
                 .Setup(x => x.ShowLogin(null))
-                .ReturnsAsync(new LoginDialogData { Username = userName, Password = password });
+                .ReturnsAsync(new LoginData { Username = userName, Password = password });
             dialog
                 .Setup(x => x.ShowProgress(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(progressDialog.Object);
