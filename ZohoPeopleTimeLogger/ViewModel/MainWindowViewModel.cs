@@ -6,6 +6,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using ZohoPeopleTimeLogger.Controllers;
 using ZohoPeopleTimeLogger.Events;
+using ZohoPeopleTimeLogger.Exceptions;
 using ZohoPeopleTimeLogger.Model;
 using ZohoPeopleTimeLogger.Services;
 
@@ -149,22 +150,46 @@ namespace ZohoPeopleTimeLogger.ViewModel
             LoadDays(monthChangedEventArgs.NewMonth);
         }
 
-        private void FillTime()
+        private async void FillTime()
         {
             if (AnyNotFilledDays())
             {
-                daysService.FillMissingTimeLogsAsync(Days);
+                try
+                {
+                    await daysService.FillMissingTimeLogsAsync(Days);
+                }
+                catch (JobNotFoundException ex)
+                {
+                    await dialogService.ShowMessageAsync("Oops...", 
+                        "I cannot make you happy, master :( \n\n" +
+                        "There is no jobs in ZOHO for this month\n" +
+                        "Just drink some coffe and tell your manager about this...\n" +
+                        "Stay cool, my friend! ;)\n\n" +
+                        "Additional info: " + ex.Message);
+                }
             }
             else
             {
-                dialogService.ShowMessageAsync("Relax! You already happy!",
+                await dialogService.ShowMessageAsync("Relax! You already happy!",
                     "You have no empty days in this month. So don't worry, boss will be happy!");
             }
         }
 
-        private void FillSingleDay(IDayViewModel dayViewModel)
+        private async void FillSingleDay(IDayViewModel dayViewModel)
         {
-            daysService.FillMissingTimeLogsAsync(dayViewModel);
+            try
+            {
+                await daysService.FillMissingTimeLogsAsync(dayViewModel);
+            }
+            catch (JobNotFoundException ex)
+            {
+                await dialogService.ShowMessageAsync("Oops...", 
+                    "Sorry, cannot log working time for this day. Job is not found in ZOHO :( Just relax and drink coffee....\n" +
+                    "....and check this problem with your manager.\n" +
+                    "Stay cool! ;)\n\n " +
+                    "Additional info: " + ex.Message);
+            }
+            
         }
 
         private bool AnyNotFilledDays()
