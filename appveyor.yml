@@ -11,6 +11,7 @@ assembly_info:
 cache:
   - packages -> **\packages.config
 before_build:
+- set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
 - nuget restore
 build:
   verbosity: minimal
