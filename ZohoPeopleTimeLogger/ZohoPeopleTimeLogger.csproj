@@ -78,8 +78,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ZohoPeopleClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZohoPeopleClient.1.0.0.0\lib\net45\ZohoPeopleClient.dll</HintPath>
+    <Reference Include="ZohoPeopleClient, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZohoPeopleClient.1.0.1.0\lib\net45\ZohoPeopleClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

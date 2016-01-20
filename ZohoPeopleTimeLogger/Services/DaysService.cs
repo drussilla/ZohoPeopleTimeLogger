@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using ZohoPeopleClient;
 using ZohoPeopleTimeLogger.Extensions;
 using ZohoPeopleTimeLogger.ViewModel;
@@ -15,7 +16,7 @@ namespace ZohoPeopleTimeLogger.Services
         private readonly IJobService jobService;
 
         public const string DayOffHolidayRemark = "Day off for all employees";
-        public const string VacationViewName = "P_ApplyLeaveView";
+        public const string VacationViewName = "leave";
         public const string VacationHolidayName = "Vacation";
         public const int TotalDaysInATable = 25;
         
@@ -136,16 +137,19 @@ namespace ZohoPeopleTimeLogger.Services
 
         private async Task FillVacations(List<IDayViewModel> days)
         {
-            var vacations = await zohoClient.FetchRecord.GetAsync(VacationViewName);
+            var vacations = await zohoClient.FetchRecord.GetByFormAsync(VacationViewName);
 
             if (vacations == null || !vacations.Any())
             {
                 return;
             }
 
+            var items = vacations.SelectMany(x => ((IEnumerable<KeyValuePair<string, JToken>>)x)).SelectMany(x => x.Value).ToList();
+            
             foreach (var day in days)
             {
-                if (vacations.Any(x => DateTime.Parse((string)x["From"]) <= day.Date && DateTime.Parse((string)x["To"]) >= day.Date))
+                if (items.Any(x => DateTime.Parse((string)x["From"]) <= day.Date && DateTime.Parse((string)x["To"]) >= day.Date &&
+                ((string)x["ApprovalStatus"]).Equals("Approved", StringComparison.OrdinalIgnoreCase)))
                 {
                     day.MarkAsHoliday(VacationHolidayName);
                 }

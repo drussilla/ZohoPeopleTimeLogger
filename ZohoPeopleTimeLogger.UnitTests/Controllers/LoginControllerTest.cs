@@ -58,7 +58,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             employee2["Email ID"] = "random";
             employee2["EmployeeID"] = "11";
             zoho
-                .Setup(x => x.FetchRecord.GetAsync(It.IsAny<string>()))
+                .Setup(x => x.FetchRecord.GetByViewAsync(It.IsAny<string>()))
                 .ReturnsAsync(new List<dynamic> {employee1, employee2});
 
             var result = target.LoginWithPassword().Result;
@@ -66,7 +66,7 @@ namespace ZohoPeopleTimeLogger.UnitTests.Controllers
             progressDialog.Verify(x => x.SetIndeterminate());
             zoho.Verify(x => x.LoginAsync(userName, password));
             progressDialog.Verify(x => x.CloseAsync());
-            zoho.Verify(x => x.FetchRecord.GetAsync("P_EmployeeView"));
+            zoho.Verify(x => x.FetchRecord.GetByViewAsync("P_EmployeeView"));
 
             Assert.NotNull(result);
             Assert.Equal(userName, result.UserName);
