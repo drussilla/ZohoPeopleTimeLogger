@@ -162,8 +162,8 @@ namespace ZohoPeopleTimeLogger.ViewModel
                 {
                     await dialogService.ShowMessageAsync("Oops...", 
                         "I cannot make you happy, master :( \n\n" +
-                        "There is no jobs in ZOHO for this month\n" +
-                        "Just drink some coffe and tell your manager about this...\n" +
+                        "There is no job in ZOHO for this month\n" +
+                        "Just drink some coffee and tell your manager about this issue...\n" +
                         "Stay cool, my friend! ;)\n\n" +
                         "Additional info: " + ex.Message);
                 }
