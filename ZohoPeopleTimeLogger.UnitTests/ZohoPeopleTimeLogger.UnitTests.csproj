@@ -68,8 +68,8 @@
     <Reference Include="xunit.core">
       <HintPath>..\packages\xunit.extensibility.core.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.dll</HintPath>
     </Reference>
-    <Reference Include="ZohoPeopleClient, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZohoPeopleClient.1.0.1.0\lib\net45\ZohoPeopleClient.dll</HintPath>
+    <Reference Include="ZohoPeopleClient, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZohoPeopleClient.1.0.2.0\lib\net45\ZohoPeopleClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

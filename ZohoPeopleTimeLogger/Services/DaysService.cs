@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ZohoPeopleClient;
+using ZohoPeopleClient.FetchRecordApi;
 using ZohoPeopleTimeLogger.Extensions;
 using ZohoPeopleTimeLogger.ViewModel;
 
@@ -137,7 +138,7 @@ namespace ZohoPeopleTimeLogger.Services
 
         private async Task FillVacations(List<IDayViewModel> days)
         {
-            var vacations = await zohoClient.FetchRecord.GetByFormAsync(VacationViewName);
+            var vacations = await zohoClient.FetchRecord.GetByFormAsync(VacationViewName, SearchColumn.EMPLOYEEID, auth.GetAuthenticationData().Id);
 
             if (vacations == null || !vacations.Any())
             {
@@ -148,10 +149,15 @@ namespace ZohoPeopleTimeLogger.Services
             
             foreach (var day in days)
             {
-                if (items.Any(x => DateTime.Parse((string)x["From"]) <= day.Date && DateTime.Parse((string)x["To"]) >= day.Date &&
-                ((string)x["ApprovalStatus"]).Equals("Approved", StringComparison.OrdinalIgnoreCase)))
+                var matchedLeave = items.FirstOrDefault(x =>
+                    DateTime.Parse((string) x["From"]) <= day.Date &&
+                    DateTime.Parse((string) x["To"]) >= day.Date &&
+                    ((string) x["ApprovalStatus"]).Equals("Approved", StringComparison.OrdinalIgnoreCase) &&
+                    (((string) x["Leavetype"]).Equals("Holiday", StringComparison.OrdinalIgnoreCase) ||
+                     ((string) x["Leavetype"]).Equals("Sick", StringComparison.OrdinalIgnoreCase)));
+                if (matchedLeave != null)
                 {
-                    day.MarkAsHoliday(VacationHolidayName);
+                    day.MarkAsHoliday((string)matchedLeave["Leavetype"]);
                 }
             }
         }
