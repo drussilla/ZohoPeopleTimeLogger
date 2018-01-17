@@ -10,9 +10,9 @@ namespace ZohoPeopleTimeLogger.ViewModel
     {
         public DateTime CurrentDate { get; private set; }
 
-        public ICommand NextMonthCommand { get; private set; }
+        public ICommand NextMonthCommand { get; }
 
-        public ICommand PreviousMonthCommand { get; private set; }
+        public ICommand PreviousMonthCommand { get; }
 
         public event EventHandler<MonthChangedEventArgs> MonthChanged = delegate { };
 
